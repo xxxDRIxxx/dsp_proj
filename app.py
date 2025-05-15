@@ -1,13 +1,22 @@
 import streamlit as st
 from morse_utils import text_to_morse, morse_to_text
 from PIL import Image
-import pytesseract
+import requests
 import numpy as np
 from scipy.io import wavfile
 import io
 
 st.set_page_config(page_title="Morse Code Translator", layout="centered")
 st.title("📡 Morse Code Translator")
+
+def ocr_image_from_url(image_bytes):
+    response = requests.post(
+        'https://api.ocr.space/parse/image',
+        files={'filename': image_bytes},
+        data={'apikey': 'helloworld', 'language': 'eng'}
+    )
+    result = response.json()
+    return result['ParsedResults'][0]['ParsedText'] if 'ParsedResults' in result else ''
 
 option = st.radio("Choose translation mode:", (
     "Text to Morse", "Morse to Text", 
@@ -29,9 +38,8 @@ elif option == "Morse to Text":
 elif option == "Image to Morse":
     uploaded_image = st.file_uploader("Upload image with text", type=["png", "jpg", "jpeg"])
     if uploaded_image:
-        image = Image.open(uploaded_image)
-        st.image(image, caption="Uploaded Image", use_column_width=True)
-        extracted_text = pytesseract.image_to_string(image)
+        st.image(uploaded_image, caption="Uploaded Image", use_column_width=True)
+        extracted_text = ocr_image_from_url(uploaded_image)
         st.write("🔍 Extracted Text:")
         st.code(extracted_text.strip())
         morse_output = text_to_morse(extracted_text)
