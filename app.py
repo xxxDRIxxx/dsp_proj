@@ -5,7 +5,6 @@ import pytesseract
 import numpy as np
 from scipy.io import wavfile
 import io
-import cv2
 
 st.set_page_config(page_title="Morse Code Translator", layout="centered")
 st.title("📡 Morse Code Translator")
@@ -43,13 +42,12 @@ elif option == "Audio to Morse":
     uploaded_audio = st.file_uploader("Upload Morse code audio (.wav)", type=["wav"])
     if uploaded_audio:
         rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
-        if data.ndim > 1:  # Stereo to mono
+        if data.ndim > 1:
             data = data[:, 0]
         signal = np.abs(data)
         threshold = 0.3 * np.max(signal)
 
         bits = (signal > threshold).astype(int)
-
         dot_length = rate // 10
         samples_per_symbol = []
         current = bits[0]
@@ -75,6 +73,7 @@ elif option == "Audio to Morse":
                     morse += " / "
                 elif dur > dot_length * 2:
                     morse += " "
+
         st.write("📡 Morse Code:")
         st.code(morse)
         st.write("🔤 Translated Text:")
