@@ -38,7 +38,7 @@ elif option == "Morse to Text":
 elif option == "Image to Morse":
     uploaded_image = st.file_uploader("Upload image with text", type=["png", "jpg", "jpeg"])
     if uploaded_image:
-        st.image(uploaded_image, caption="Uploaded Image", use_column_width=True)
+        st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
         extracted_text = ocr_image_from_url(uploaded_image)
         st.write("🔍 Extracted Text:")
         st.code(extracted_text.strip())
