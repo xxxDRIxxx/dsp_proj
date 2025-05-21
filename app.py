@@ -184,6 +184,6 @@ elif st.session_state.page == "contact":
 # Footer
 st.markdown("---")
 st.markdown(
-    "<div style='text-align:center; color:gray;'>© 2025 MorseDecoder. Developed by <a style='color:#60a5fa;' href='#'>YourName</a></div>",
+    "<div style='text-align:center; color:gray;'>© 2025 MorseDecoder. Developed by <a style='color:#60a5fa;' href='#'>B.D.E.R.</a></div>",
     unsafe_allow_html=True,
 )
