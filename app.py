@@ -42,6 +42,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 # --- Initialize page state ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
@@ -57,13 +58,30 @@ with nav_cols[0]:
         if st.button("Facts", key="nav_facts"):
             st.session_state.page = "facts"
     with col5:
-        if st.button("About Us", key="nav_contact"):
+        if st.button("Contact", key="nav_contact"):
             st.session_state.page = "contact"
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
-# --- Page rendering ---
+# --- OCR function fixed to avoid 400 error ---
+def ocr_image_from_url(image_file):
+    payload = {
+        'apikey': 'helloworld',  # Replace with your own API key for better quota
+        'language': 'eng',
+    }
+    files = {
+        'filename': (image_file.name, image_file.getvalue(), image_file.type)
+    }
+    response = requests.post('https://api.ocr.space/parse/image', files=files, data=payload)
+    result = response.json()
+    if 'ParsedResults' in result and result['ParsedResults']:
+        return result['ParsedResults'][0]['ParsedText']
+    else:
+        # Optionally log errors:
+        # st.error("OCR API error: " + result.get('ErrorMessage', 'Unknown error'))
+        return ''
 
+# --- Page rendering ---
 if st.session_state.page == "home":
     # Header
     st.markdown("<h1 style='text-align:center; color:#60a5fa;'>📡 Morse Code Translator</h1>", unsafe_allow_html=True)
@@ -91,24 +109,25 @@ if st.session_state.page == "home":
 
     # --- Tab 2: Image Input ---
     with tabs[1]:
-        def ocr_image_from_url(image_bytes):
-            response = requests.post(
-                'https://api.ocr.space/parse/image',
-                files={'filename': image_bytes},
-                data={'apikey': 'helloworld', 'language': 'eng'}
-            )
-            result = response.json()
-            return result['ParsedResults'][0]['ParsedText'] if 'ParsedResults' in result else ''
-
         uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
         if uploaded_image:
             st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
             extracted_text = ocr_image_from_url(uploaded_image)
             st.write("🔍 Extracted Text:")
             st.code(extracted_text.strip())
-            morse_output = text_to_morse(extracted_text)
-            st.write("📡 Morse Code:")
-            st.code(morse_output)
+
+            # If OCR text looks like Morse (contains dots/dashes), convert to text; else convert text to Morse
+            if any(c in extracted_text for c in ['.', '-', '/', ' ']):
+                try:
+                    decoded = morse_to_text(extracted_text)
+                    st.write("🔤 Translated Text:")
+                    st.code(decoded)
+                except Exception as e:
+                    st.error(f"Error decoding Morse code: {e}")
+            else:
+                morse_output = text_to_morse(extracted_text)
+                st.write("📡 Morse Code:")
+                st.code(morse_output)
 
     # --- Tab 3: Audio Input ---
     with tabs[2]:
@@ -154,36 +173,28 @@ if st.session_state.page == "home":
 
 elif st.session_state.page == "facts":
     st.header("📚 Facts about Morse Code")
+    st.markdown("""
+    Morse code was developed in the 1830s and 1840s by Samuel Morse and Alfred Vail.  
+    It encodes text characters as sequences of dots (.) and dashes (-), allowing for communication over telegraph lines.  
 
-    st.markdown(
-        """
-        Morse code is a method of encoding textual information as a series of dots (short signals) and dashes (long signals). 
-        It was developed in the 1830s and 1840s by Samuel Morse and Alfred Vail to enable long-distance communication via telegraph. 
-        The code represents letters, numerals, and punctuation through unique sequences of these signals.
+    **History:**  
+    Morse code revolutionized long-distance communication in the 19th century. It was widely used in telegraphy and later adopted for radio transmissions. The code played a critical role in maritime communication, especially with the introduction of the SOS distress signal (... --- ...).
 
-        Historically, Morse code was vital for early telegraph systems and later became the backbone of maritime and military communications, 
-        especially in the 20th century. The universal distress signal SOS (... --- ...) is a famous example, still recognized worldwide.
-
-        In today's generation, while modern digital communication methods dominate, Morse code remains relevant in several areas:
-        amateur radio enthusiasts use it for reliable long-distance communication, especially under poor signal conditions;
-        it is used in assistive technologies for people with disabilities who can communicate using simple signals;
-        and it's employed in some emergency and aviation contexts as a backup signaling system.
-
-        Despite technological advances, Morse code's simplicity, reliability, and distinctiveness continue to make it a fascinating and useful communication method.
-        """
-    )
+    **Uses Today:**  
+    Although largely replaced by modern digital communication, Morse code remains in use among amateur radio operators and for emergency signaling. Its simplicity and ability to be transmitted via sound, light, or touch make it useful in various specialized fields and for accessibility purposes.
+    """)
 
 elif st.session_state.page == "contact":
     st.header("📞 Contact Information")
     st.write("Feel free to reach out!")
-    st.write("- Email: @national-u.edu.ph")
-    st.write("- Phone: +6391234556789")
-    st.write("- Twitter: [@morsecodedecoder]")
-    st.write("- GitHub: [morsecodedecoder")
+    st.write("- Email: yourname@example.com")
+    st.write("- Phone: +1 (555) 123-4567")
+    st.write("- Twitter: [@yourhandle](https://twitter.com/yourhandle)")
+    st.write("- GitHub: [yourusername](https://github.com/yourusername)")
 
 # Footer
 st.markdown("---")
 st.markdown(
-    "<div style='text-align:center; color:gray;'>© 2025 MorseDecoder. Developed by <a style='color:#60a5fa;' href='#'>B.D.E.R.</a></div>",
+    "<div style='text-align:center; color:gray;'>© 2025 MorseDecoder. Developed by <a style='color:#60a5fa;' href='#'>YourName</a></div>",
     unsafe_allow_html=True,
 )
