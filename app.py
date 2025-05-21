@@ -97,12 +97,15 @@ if st.session_state.page == "home":
         mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text"])
 
         if mode == "Text to Morse":
-            text_input = st.text_input("Enter English text:")
-            if text_input:
-                # Replace space with slash to explicitly mark word boundaries
-                formatted_input = text_input.strip().replace(" ", " / ")
-                morse_output = text_to_morse(formatted_input)
-                st.code(morse_output, language='text')
+            def text_to_morse(text):
+            words = text.strip().split()
+            morse_words = []
+            for word in words:
+                morse_letters = [morse_dict.get(char.upper(), '') for char in word if char.upper() in morse_dict]
+                morse_word = ' '.join(morse_letters)
+                morse_words.append(morse_word)
+            return ' / '.join(morse_words)
+
 
         elif mode == "Morse to Text":
             morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
