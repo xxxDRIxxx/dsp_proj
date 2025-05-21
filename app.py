@@ -108,10 +108,6 @@ if st.session_state.page == "home":
             if morse_input:
                 text_output = morse_to_text(morse_input)
                 st.code(text_output, language='text')
-                
-            # Display Morse code reference image
-            st.markdown("#### Morse Code Reference Chart")
-            st.image("images/morse_chart.png", use_column_width=True)
 
     # --- Tab 2: Image Input ---
     with tabs[1]:
