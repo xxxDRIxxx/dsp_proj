@@ -1,5 +1,6 @@
 import streamlit as st
 from morse_utils import text_to_morse, morse_to_text
+from morse_utils import morse_table
 from PIL import Image
 import requests
 import numpy as np
@@ -108,6 +109,7 @@ if st.session_state.page == "home":
             if morse_input:
                 text_output = morse_to_text(morse_input)
                 st.code(text_output, language='text')
+                st.markdown(morse_table)
 
     # --- Tab 2: Image Input ---
     with tabs[1]:
