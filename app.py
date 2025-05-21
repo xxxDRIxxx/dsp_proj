@@ -1,4 +1,6 @@
+import statistics
 import streamlit as st
+from scipy.signal import hilbert
 from morse_utils import text_to_morse, morse_to_text
 from PIL import Image
 import requests
@@ -140,52 +142,43 @@ if st.session_state.page == "home":
                 st.error(f"Error reading WAV file: {e}")
                 st.stop()
 
+            # Use hilbert method
+            analytic_signal = hilbert(data)
+            envelope = np.abs(analytic_signal)
 
-            # Normalize and compute envelope
-            data = data / np.max(np.abs(data))
-            envelope = np.abs(data)
-            
-            # Use a sliding window mean filter for smoothing
-            window_size = int(0.005 * rate)  # 5ms window
-            smoothed = np.convolve(envelope, np.ones(window_size)/window_size, mode='same')
+            threshold = np.mean(envelope) + 0.5 * np.std(envelope)
+            bits = (envelope > threshold).astype(int)
 
-            # Dynamic threshold using percentile
-            threshold = np.percentile(smoothed, 95)
-            binary_signal = (smoothed > threshold).astype(int)
-
-            # Run-Length Encoding (RLE) to group on/off durations
+            # Convert signal to on/off segments
             durations = []
-            current_bit = binary_signal[0]
-            length = 0
-            for bit in binary_signal:
-                if bit == current_bit:
-                    length += 1
+            current_val = bits[0]
+            count = 1
+            for bit in bits[1:]:
+                if bit == current_val:
+                    count += 1
                 else:
-                    durations.append((current_bit, length))
-                    current_bit = bit
-                    length = 1
-            durations.append((current_bit, length))
+                    durations.append((current_val, count))
+                    current_val = bit
+                    count = 1
+            durations.append((current_val, count))
 
-            # Estimate dot duration based on short pulses
-            on_durations = [dur for bit, dur in durations if bit == 1]
-            if not on_durations:
-                st.error("No valid Morse signal detected.")
-            else:
-                dot_duration = min(on_durations)
-                morse = ""
-                for bit, dur in durations:
-                    units = min(round(dur / dot_duration), 7)
-                    if bit == 1:  # Tone
-                        if units <= 2:
-                            morse += "."
-                        else:
-                            morse += "-"
-                    else:  # Silence
-                        if units >= 7:
-                            morse += " / "  # Word space
-                        elif units >= 3:
-                            morse += " "    # Letter space
+            # Guess dot length from shortest "on" durations
+            on_durations = [dur for val, dur in durations if val == 1]
+            dot_length = statistics.median_low(on_durations)
 
+            morse = ""
+            for val, dur in durations:
+                units = round(dur / dot_length)
+                if val == 1:
+                    morse += "." if units <= 2 else "-"
+                else:
+                    if units >= 7:
+                        morse += " / "
+                    elif units >= 3:
+                        morse += " "
+            # else: intra-letter gap (do nothing)
+
+                st.line_chart(bits[::rate//100])  # Downsample for readability
                 st.write("📡 Detected Morse Code:")
                 st.code(morse)
                 try:
