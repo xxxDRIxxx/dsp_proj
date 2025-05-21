@@ -45,25 +45,20 @@ st.markdown(
 # --- Initialize page state ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
+
 nav_cols = st.columns(1)
 
 with nav_cols[0]:
-    # Use st.markdown to create buttons inside a flex container using HTML + Javascript
-    # But since you want no raw HTML <a>, and Streamlit buttons can’t be styled with flexbox directly,
-    # Instead, use st.button and center with columns:
-
     col1, col2, col3, col4, col5 = st.columns([1,1,1,1,1])
     with col1:
         if st.button("Decoder", key="nav_home"):
             st.session_state.page = "home"
     with col3:
-        if st.button("Home", key="nav_facts"):
+        if st.button("Facts", key="nav_facts"):
             st.session_state.page = "facts"
     with col5:
         if st.button("About Us", key="nav_contact"):
             st.session_state.page = "contact"
-
-
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -159,17 +154,24 @@ if st.session_state.page == "home":
 
 elif st.session_state.page == "facts":
     st.header("📚 Facts about Morse Code")
-    facts = [
-        "Morse code was developed in the 1830s and 1840s by Samuel Morse and Alfred Vail.",
-        "It encodes text characters as sequences of dots (.) and dashes (-).",
-        "Morse code was widely used in early radio communications and telegraphy.",
-        "SOS (... --- ...) is the most famous Morse code distress signal.",
-        "Morse code can be transmitted in sound, light, or visual signals.",
-        "Amateur radio enthusiasts still use Morse code today.",
-        "Morse code was officially used by the military and maritime services well into the 21st century.",
-    ]
-    for fact in facts:
-        st.write("• " + fact)
+
+    st.markdown(
+        """
+        Morse code is a method of encoding textual information as a series of dots (short signals) and dashes (long signals). 
+        It was developed in the 1830s and 1840s by Samuel Morse and Alfred Vail to enable long-distance communication via telegraph. 
+        The code represents letters, numerals, and punctuation through unique sequences of these signals.
+
+        Historically, Morse code was vital for early telegraph systems and later became the backbone of maritime and military communications, 
+        especially in the 20th century. The universal distress signal SOS (... --- ...) is a famous example, still recognized worldwide.
+
+        In today's generation, while modern digital communication methods dominate, Morse code remains relevant in several areas:
+        amateur radio enthusiasts use it for reliable long-distance communication, especially under poor signal conditions;
+        it is used in assistive technologies for people with disabilities who can communicate using simple signals;
+        and it's employed in some emergency and aviation contexts as a backup signaling system.
+
+        Despite technological advances, Morse code's simplicity, reliability, and distinctiveness continue to make it a fascinating and useful communication method.
+        """
+    )
 
 elif st.session_state.page == "contact":
     st.header("📞 Contact Information")
