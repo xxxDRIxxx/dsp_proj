@@ -130,65 +130,65 @@ if st.session_state.page == "home":
                 st.code(morse_output)
 
     # --- Tab 3: Audio Input ---
-with tabs[2]:
-    uploaded_audio = st.file_uploader("Upload a Morse code audio (.wav)", type=["wav"])
-    if uploaded_audio:
-        rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
-        if data.ndim > 1:
-            data = data[:, 0]  # Use first channel if stereo
-
-        # Normalize signal
-        data = data / np.max(np.abs(data))
-        data = np.abs(data)
-
-        # Threshold the signal
-        threshold = 0.2
-        binary_signal = (data > threshold).astype(int)
-
-        # Run-Length Encoding (RLE) to group on/off durations
-        durations = []
-        current_bit = binary_signal[0]
-        length = 0
-        for bit in binary_signal:
-            if bit == current_bit:
-                length += 1
+    with tabs[2]:
+        uploaded_audio = st.file_uploader("Upload a Morse code audio (.wav)", type=["wav"])
+        if uploaded_audio:
+            rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
+            if data.ndim > 1:
+                data = data[:, 0]  # Use first channel if stereo
+    
+            # Normalize signal
+            data = data / np.max(np.abs(data))
+            data = np.abs(data)
+    
+            # Threshold the signal
+            threshold = 0.2
+            binary_signal = (data > threshold).astype(int)
+    
+            # Run-Length Encoding (RLE) to group on/off durations
+            durations = []
+            current_bit = binary_signal[0]
+            length = 0
+            for bit in binary_signal:
+                if bit == current_bit:
+                    length += 1
+                else:
+                    durations.append((current_bit, length))
+                    current_bit = bit
+                    length = 1
+            durations.append((current_bit, length))
+    
+            # Estimate dot duration from shortest "on" signal
+            on_durations = [dur for bit, dur in durations if bit == 1]
+            if not on_durations:
+                st.error("No valid Morse signal detected.")
             else:
-                durations.append((current_bit, length))
-                current_bit = bit
-                length = 1
-        durations.append((current_bit, length))
-
-        # Estimate dot duration from shortest "on" signal
-        on_durations = [dur for bit, dur in durations if bit == 1]
-        if not on_durations:
-            st.error("No valid Morse signal detected.")
-        else:
-            dot_duration = min(on_durations)
-
-            # Convert to Morse code based on timing
-            morse = ""
-            for bit, dur in durations:
-                units = round(dur / dot_duration)
-                if bit == 1:  # Tone
-                    if units <= 2:
-                        morse += "."
-                    else:
-                        morse += "-"
-                else:  # Silence
-                    if units >= 7:
-                        morse += " / "  # Word space
-                    elif units >= 3:
-                        morse += " "    # Letter space
-                    # 1-unit space (intra-letter) is ignored
-
-            st.write("📡 Detected Morse Code:")
-            st.code(morse)
-            try:
-                translated = morse_to_text(morse)
-                st.write("🔤 Translated Text:")
-                st.code(translated)
-            except Exception as e:
-                st.error(f"Translation error: {e}")
+                dot_duration = min(on_durations)
+    
+                # Convert to Morse code based on timing
+                morse = ""
+                for bit, dur in durations:
+                    units = round(dur / dot_duration)
+                    if bit == 1:  # Tone
+                        if units <= 2:
+                            morse += "."
+                        else:
+                            morse += "-"
+                    else:  # Silence
+                        if units >= 7:
+                            morse += " / "  # Word space
+                        elif units >= 3:
+                            morse += " "    # Letter space
+                        # 1-unit space (intra-letter) is ignored
+    
+                st.write("📡 Detected Morse Code:")
+                st.code(morse)
+                try:
+                    translated = morse_to_text(morse)
+                    st.write("🔤 Translated Text:")
+                    st.code(translated)
+                except Exception as e:
+                    st.error(f"Translation error: {e}")
 
 
 elif st.session_state.page == "facts":
