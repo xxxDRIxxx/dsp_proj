@@ -56,40 +56,29 @@ with tabs[1]:
         result = response.json()
         return result['ParsedResults'][0]['ParsedText'] if 'ParsedResults' in result else ''
 
-        uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
-        if uploaded_image:
-            st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
-            extracted_text = ocr_image_from_url(uploaded_image).strip()
-            st.write("🔍 Extracted Text:")
-            st.code(extracted_text)
-
-    # Check if extracted text looks like Morse code
-    allowed_chars = set(".- /")
-    text_chars = set(extracted_text)
-
-    if text_chars.issubset(allowed_chars) and len(extracted_text) > 0:
-        # Treat as Morse code → decode to English
-        decoded_text = morse_to_text(extracted_text)
-        st.write("🔤 Decoded English Text:")
-        st.code(decoded_text)
-    else:
-        # Treat as English text → encode to Morse
-        morse_code = text_to_morse(extracted_text)
-        st.write("📡 Encoded Morse Code:")
-        st.code(morse_code)
-
-
-        # Determine if it's Morse or regular text
-        is_morse = all(char in ".-/ \n" for char in extracted_text)
-
-        if is_morse:
-            translated = morse_to_text(extracted_text)
-            st.write("🔤 Translated to English:")
-            st.code(translated)
+    uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
+    if uploaded_image:
+        st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+        
+        extracted_text = ocr_image_from_url(uploaded_image).strip()
+        
+        st.write("🔍 Extracted Text:")
+        st.code(extracted_text)
+        
+        allowed_chars = set(".- /")
+        text_chars = set(extracted_text)
+        
+        if text_chars.issubset(allowed_chars) and len(extracted_text) > 0:
+            # It's Morse code → decode
+            decoded_text = morse_to_text(extracted_text)
+            st.write("🔤 Decoded English Text:")
+            st.code(decoded_text)
         else:
-            morse_output = text_to_morse(extracted_text)
-            st.write("📡 Translated to Morse:")
-            st.code(morse_output)
+            # It's English text → encode
+            morse_code = text_to_morse(extracted_text)
+            st.write("📡 Encoded Morse Code:")
+            st.code(morse_code)
+
 
 # --- Tab 3: Audio Input ---
 with tabs[2]:
