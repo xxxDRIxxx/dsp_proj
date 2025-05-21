@@ -99,11 +99,11 @@ if st.session_state.page == "home":
         if mode == "Text to Morse":
             def text_to_morse(text):
             words = text.strip().split()
-            morse_words = []
+            morse_input = []
             for word in words:
                 morse_letters = [morse_dict.get(char.upper(), '') for char in word if char.upper() in morse_dict]
                 morse_word = ' '.join(morse_letters)
-                morse_words.append(morse_word)
+                morse_input.append(morse_word)
             return ' / '.join(morse_words)
 
 
