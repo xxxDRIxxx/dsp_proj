@@ -7,36 +7,56 @@ from scipy.io import wavfile
 import io
 
 st.set_page_config(page_title="Morse Code Translator", layout="centered")
-st.title("📡 Morse Code Translator")
 
-def ocr_image_from_url(image_bytes):
-    response = requests.post(
-        'https://api.ocr.space/parse/image',
-        files={'filename': image_bytes},
-        data={'apikey': 'helloworld', 'language': 'eng'}
-    )
-    result = response.json()
-    return result['ParsedResults'][0]['ParsedText'] if 'ParsedResults' in result else ''
+# Header
+st.markdown(
+    """
+    <style>
+    .main { background: linear-gradient(135deg, #1f2937, #111827); color: white; }
+    h1, h2, .stTextInput, .stTextArea, .stFileUploader, .stRadio label {
+        color: #60a5fa;
+    }
+    .stCodeBlock { background-color: #1f2937 !important; color: #10b981 !important; }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-option = st.radio("Choose translation mode:", (
-    "Text to Morse", "Morse to Text", 
-    "Image to Morse", "Audio to Morse"
-))
+st.markdown("<h1 style='text-align:center;'>📡 Morse Code Translator</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Convert Morse code from <b>Text</b>, <b>Image</b>, or <b>Audio</b> to English.</p>", unsafe_allow_html=True)
+st.markdown("---")
 
-if option == "Text to Morse":
-    text_input = st.text_input("Enter text:")
-    if text_input:
-        morse_output = text_to_morse(text_input)
-        st.code(morse_output)
+# Tabs for input methods
+tabs = st.tabs(["📝 Text Input", "🖼️ Image Input", "🎧 Audio Input"])
 
-elif option == "Morse to Text":
-    morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
-    if morse_input:
-        text_output = morse_to_text(morse_input)
-        st.code(text_output)
+# --- Tab 1: Text Input ---
+with tabs[0]:
+    mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text"])
 
-elif option == "Image to Morse":
-    uploaded_image = st.file_uploader("Upload image with text", type=["png", "jpg", "jpeg"])
+    if mode == "Text to Morse":
+        text_input = st.text_input("Enter English text:")
+        if text_input:
+            morse_output = text_to_morse(text_input)
+            st.code(morse_output, language='text')
+
+    elif mode == "Morse to Text":
+        morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
+        if morse_input:
+            text_output = morse_to_text(morse_input)
+            st.code(text_output, language='text')
+
+# --- Tab 2: Image Input ---
+with tabs[1]:
+    def ocr_image_from_url(image_bytes):
+        response = requests.post(
+            'https://api.ocr.space/parse/image',
+            files={'filename': image_bytes},
+            data={'apikey': 'helloworld', 'language': 'eng'}
+        )
+        result = response.json()
+        return result['ParsedResults'][0]['ParsedText'] if 'ParsedResults' in result else ''
+
+    uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
     if uploaded_image:
         st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
         extracted_text = ocr_image_from_url(uploaded_image)
@@ -46,8 +66,9 @@ elif option == "Image to Morse":
         st.write("📡 Morse Code:")
         st.code(morse_output)
 
-elif option == "Audio to Morse":
-    uploaded_audio = st.file_uploader("Upload Morse code audio (.wav)", type=["wav"])
+# --- Tab 3: Audio Input ---
+with tabs[2]:
+    uploaded_audio = st.file_uploader("Upload a Morse code audio (.wav)", type=["wav"])
     if uploaded_audio:
         rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
         if data.ndim > 1:
@@ -87,5 +108,6 @@ elif option == "Audio to Morse":
         st.write("🔤 Translated Text:")
         st.code(morse_to_text(morse))
 
+# Footer
 st.markdown("---")
-st.markdown("✅ Supports A-Z, 0-9\n📍 Use `/` for space in Morse input")
+st.markdown("<div style='text-align:center; color:gray;'>© 2025 MorseDecoder. Developed by <a style='color:#60a5fa;' href='#'>YourName</a></div>", unsafe_allow_html=True)
