@@ -176,10 +176,10 @@ elif st.session_state.page == "facts":
 elif st.session_state.page == "contact":
     st.header("📞 Contact Information")
     st.write("Feel free to reach out!")
-    st.write("- Email: yourname@example.com")
-    st.write("- Phone: +1 (555) 123-4567")
-    st.write("- Twitter: [@yourhandle](https://twitter.com/yourhandle)")
-    st.write("- GitHub: [yourusername](https://github.com/yourusername)")
+    st.write("- Email: @national-u.edu.ph")
+    st.write("- Phone: +6391234556789")
+    st.write("- Twitter: [@morsecodedecoder]")
+    st.write("- GitHub: [morsecodedecoder")
 
 # Footer
 st.markdown("---")
