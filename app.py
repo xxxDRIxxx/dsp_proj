@@ -59,12 +59,21 @@ with tabs[1]:
     uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
     if uploaded_image:
         st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
-        extracted_text = ocr_image_from_url(uploaded_image)
+        extracted_text = ocr_image_from_url(uploaded_image).strip()
         st.write("🔍 Extracted Text:")
-        st.code(extracted_text.strip())
-        morse_output = text_to_morse(extracted_text)
-        st.write("📡 Morse Code:")
-        st.code(morse_output)
+        st.code(extracted_text)
+
+        # Determine if it's Morse or regular text
+        is_morse = all(char in ".-/ \n" for char in extracted_text)
+
+        if is_morse:
+            translated = morse_to_text(extracted_text)
+            st.write("🔤 Translated to English:")
+            st.code(translated)
+        else:
+            morse_output = text_to_morse(extracted_text)
+            st.write("📡 Translated to Morse:")
+            st.code(morse_output)
 
 # --- Tab 3: Audio Input ---
 with tabs[2]:
