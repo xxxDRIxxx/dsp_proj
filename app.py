@@ -131,13 +131,15 @@ if st.session_state.page == "home":
 
 
     # --- Tab 3: Audio Input ---
-    # --- Tab 3: Audio Input ---
-    with tabs[2]:
         uploaded_audio = st.file_uploader("Upload a Morse code audio (.wav)", type=["wav"])
         if uploaded_audio:
-            rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
-            if data.ndim > 1:
-                data = data[:, 0]  # Use first channel if stereo
+            try:
+                rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
+                st.success(f"Audio loaded successfully: {rate} Hz, {data.shape}")
+            except Exception as e:
+                st.error(f"Error reading WAV file: {e}")
+                st.stop()
+
 
             # Normalize and compute envelope
             data = data / np.max(np.abs(data))
