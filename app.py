@@ -59,25 +59,31 @@ with tabs[1]:
     uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
     if uploaded_image:
         st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
-        
-        extracted_text = ocr_image_from_url(uploaded_image).strip()
-        
-        st.write("🔍 Extracted Text:")
-        st.code(extracted_text)
-        
-        allowed_chars = set(".- /")
-        text_chars = set(extracted_text)
-        
-        if text_chars.issubset(allowed_chars) and len(extracted_text) > 0:
-            # It's Morse code → decode
-            decoded_text = morse_to_text(extracted_text)
-            st.write("🔤 Decoded English Text:")
-            st.code(decoded_text)
+
+        raw_text = ocr_image_from_url(uploaded_image)
+        st.write("🔍 Raw Extracted Text:")
+        st.code(raw_text.strip())
+
+        # Clean text to only Morse symbols and spaces
+        cleaned_text = ''.join(c for c in raw_text if c in ['.', '-', ' ', '/'])
+        cleaned_text = cleaned_text.strip()
+
+        if len(cleaned_text) > 0:
+            st.write("🔎 Cleaned Morse candidate:")
+            st.code(cleaned_text)
+
+            # If cleaned_text contains only Morse symbols, decode it
+            if all(c in ['.', '-', ' ', '/'] for c in cleaned_text):
+                decoded_text = morse_to_text(cleaned_text)
+                st.write("🔤 Decoded English Text:")
+                st.code(decoded_text)
+            else:
+                # If not valid Morse, treat as English text and encode
+                morse_code = text_to_morse(raw_text)
+                st.write("📡 Encoded Morse Code:")
+                st.code(morse_code)
         else:
-            # It's English text → encode
-            morse_code = text_to_morse(extracted_text)
-            st.write("📡 Encoded Morse Code:")
-            st.code(morse_code)
+            st.write("❗ No valid Morse code detected in image.")
 
 
 # --- Tab 3: Audio Input ---
