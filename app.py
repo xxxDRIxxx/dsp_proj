@@ -8,126 +8,167 @@ import io
 
 st.set_page_config(page_title="Morse Code Translator", layout="centered")
 
-# Header
-st.markdown(
-    """
-    <style>
-    .main { background: linear-gradient(135deg, #1f2937, #111827); color: white; }
-    h1, h2, .stTextInput, .stTextArea, .stFileUploader, .stRadio label {
-        color: #60a5fa;
-    }
-    .stCodeBlock { background-color: #1f2937 !important; color: #10b981 !important; }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# Sidebar menu for navigation
+page = st.sidebar.selectbox("Navigate", ["Translator", "Facts about Morse Code", "Contact"])
 
-st.markdown("<h1 style='text-align:center;'>📡 Morse Code Translator</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Convert Morse code from <b>Text</b>, <b>Image</b>, or <b>Audio</b> to English.</p>", unsafe_allow_html=True)
-st.markdown("---")
+if page == "Translator":
+    # Header
+    st.markdown(
+        """
+        <style>
+        .main { background: linear-gradient(135deg, #1f2937, #111827); color: white; }
+        h1, h2, .stTextInput, .stTextArea, .stFileUploader, .stRadio label {
+            color: #60a5fa;
+        }
+        .stCodeBlock { background-color: #1f2937 !important; color: #10b981 !important; }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-# Tabs for input methods
-tabs = st.tabs(["📝 Text Input", "🖼️ Image Input", "🎧 Audio Input"])
+    st.markdown("<h1 style='text-align:center;'>📡 Morse Code Translator</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;'>Convert Morse code from <b>Text</b>, <b>Image</b>, or <b>Audio</b> to English.</p>", unsafe_allow_html=True)
+    st.markdown("---")
 
-# --- Tab 1: Text Input ---
-with tabs[0]:
-    mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text"])
+    # Tabs for input methods
+    tabs = st.tabs(["📝 Text Input", "🖼️ Image Input", "🎧 Audio Input"])
 
-    if mode == "Text to Morse":
-        text_input = st.text_input("Enter English text:")
-        if text_input:
-            morse_output = text_to_morse(text_input)
-            st.code(morse_output, language='text')
+    # --- Tab 1: Text Input ---
+    with tabs[0]:
+        mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text"])
 
-    elif mode == "Morse to Text":
-        morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
-        if morse_input:
-            text_output = morse_to_text(morse_input)
-            st.code(text_output, language='text')
+        if mode == "Text to Morse":
+            text_input = st.text_input("Enter English text:")
+            if text_input:
+                morse_output = text_to_morse(text_input)
+                st.code(morse_output, language='text')
 
-# --- Tab 2: Image Input ---
-with tabs[1]:
-    def ocr_image_from_url(image_bytes):
-        response = requests.post(
-            'https://api.ocr.space/parse/image',
-            files={'filename': image_bytes},
-            data={'apikey': 'helloworld', 'language': 'eng'}
-        )
-        result = response.json()
-        return result['ParsedResults'][0]['ParsedText'] if 'ParsedResults' in result else ''
+        elif mode == "Morse to Text":
+            morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
+            if morse_input:
+                text_output = morse_to_text(morse_input)
+                st.code(text_output, language='text')
 
-    uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
-    if uploaded_image:
-        st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+    # --- Tab 2: Image Input ---
+    with tabs[1]:
+        def ocr_image_from_url(image_bytes):
+            response = requests.post(
+                'https://api.ocr.space/parse/image',
+                files={'filename': image_bytes},
+                data={'apikey': 'helloworld', 'language': 'eng'}
+            )
+            result = response.json()
+            return result['ParsedResults'][0]['ParsedText'] if 'ParsedResults' in result else ''
 
-        raw_text = ocr_image_from_url(uploaded_image)
-        st.write("🔍 Raw Extracted Text:")
-        st.code(raw_text.strip())
+        uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
+        if uploaded_image:
+            st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+            extracted_text = ocr_image_from_url(uploaded_image)
+            st.write("🔍 Extracted Text:")
+            st.code(extracted_text.strip())
 
-        # Clean text to only Morse symbols and spaces
-        cleaned_text = ''.join(c for c in raw_text if c in ['.', '-', ' ', '/'])
-        cleaned_text = cleaned_text.strip()
-
-        if len(cleaned_text) > 0:
-            st.write("🔎 Cleaned Morse candidate:")
-            st.code(cleaned_text)
-
-            # If cleaned_text contains only Morse symbols, decode it
-            if all(c in ['.', '-', ' ', '/'] for c in cleaned_text):
-                decoded_text = morse_to_text(cleaned_text)
-                st.write("🔤 Decoded English Text:")
-                st.code(decoded_text)
+            # Detect if extracted text looks like morse (only dots, dashes, spaces, slashes)
+            morse_chars = set(".-/ ")
+            if set(extracted_text.strip()).issubset(morse_chars):
+                # Probably Morse code -> translate to English
+                text_output = morse_to_text(extracted_text.strip())
+                st.write("🔤 Translated Text:")
+                st.code(text_output)
             else:
-                # If not valid Morse, treat as English text and encode
-                morse_code = text_to_morse(raw_text)
-                st.write("📡 Encoded Morse Code:")
-                st.code(morse_code)
-        else:
-            st.write("❗ No valid Morse code detected in image.")
+                # Probably English text -> translate to Morse
+                morse_output = text_to_morse(extracted_text.strip())
+                st.write("📡 Morse Code:")
+                st.code(morse_output)
 
+    # --- Tab 3: Audio Input ---
+    with tabs[2]:
+        uploaded_audio = st.file_uploader("Upload a Morse code audio (.wav)", type=["wav"])
+        if uploaded_audio:
+            rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
+            if data.ndim > 1:
+                data = data[:, 0]
+            signal = np.abs(data)
+            threshold = 0.3 * np.max(signal)
 
-# --- Tab 3: Audio Input ---
-with tabs[2]:
-    uploaded_audio = st.file_uploader("Upload a Morse code audio (.wav)", type=["wav"])
-    if uploaded_audio:
-        rate, data = wavfile.read(io.BytesIO(uploaded_audio.read()))
-        if data.ndim > 1:
-            data = data[:, 0]
-        signal = np.abs(data)
-        threshold = 0.3 * np.max(signal)
-
-        bits = (signal > threshold).astype(int)
-        dot_length = rate // 10
-        samples_per_symbol = []
-        current = bits[0]
-        count = 0
-        for bit in bits:
-            if bit == current:
-                count += 1
-            else:
-                samples_per_symbol.append((current, count))
-                current = bit
-                count = 1
-        samples_per_symbol.append((current, count))
-
-        morse = ""
-        for val, dur in samples_per_symbol:
-            if val == 1:
-                if dur < dot_length * 2:
-                    morse += "."
+            bits = (signal > threshold).astype(int)
+            dot_length = rate // 10
+            samples_per_symbol = []
+            current = bits[0]
+            count = 0
+            for bit in bits:
+                if bit == current:
+                    count += 1
                 else:
-                    morse += "-"
-            else:
-                if dur > dot_length * 5:
-                    morse += " / "
-                elif dur > dot_length * 2:
-                    morse += " "
+                    samples_per_symbol.append((current, count))
+                    current = bit
+                    count = 1
+            samples_per_symbol.append((current, count))
 
-        st.write("📡 Morse Code:")
-        st.code(morse)
-        st.write("🔤 Translated Text:")
-        st.code(morse_to_text(morse))
+            morse = ""
+            for val, dur in samples_per_symbol:
+                if val == 1:
+                    if dur < dot_length * 2:
+                        morse += "."
+                    else:
+                        morse += "-"
+                else:
+                    if dur > dot_length * 5:
+                        morse += " / "
+                    elif dur > dot_length * 2:
+                        morse += " "
 
-# Footer
-st.markdown("---")
-st.write("© 2025 MorseDecoder. Developed by B.D.E.R.")
+            st.write("📡 Morse Code:")
+            st.code(morse)
+            st.write("🔤 Translated Text:")
+            st.code(morse_to_text(morse))
+
+    # Footer
+    st.markdown("---")
+    st.markdown(
+        "<div style='text-align:center; color:gray;'>"
+        "© 2025 MorseDecoder. Developed by "
+        "<a style='color:#60a5fa;' href='#'>YourName</a>"
+        "</div>",
+        unsafe_allow_html=True
+    )
+
+elif page == "Facts about Morse Code":
+    st.title("📜 Facts about Morse Code")
+    st.markdown("""
+    - Morse code was invented by Samuel Morse and Alfred Vail in the 1830s.
+    - It was originally designed for use with telegraph systems.
+    - Morse code uses a series of dots (`.`) and dashes (`-`) to represent letters and numbers.
+    - The length of a dot is the basic unit of time measurement in Morse code transmission.
+    - The SOS distress signal in Morse code is `... --- ...`.
+    - Morse code is still used in aviation and amateur radio.
+    - It was a vital communication method during World War I and II.
+    """)
+
+    st.markdown("---")
+    st.markdown(
+        "<div style='text-align:center; color:gray;'>"
+        "© 2025 MorseDecoder. Developed by "
+        "<a style='color:#60a5fa;' href='#'>YourName</a>"
+        "</div>",
+        unsafe_allow_html=True
+    )
+
+elif page == "Contact":
+    st.title("📞 Contact Information")
+    st.markdown("""
+    If you have questions or want to get in touch, please contact us at:
+
+    - Email: morse.decoder@example.com
+    - Phone: +1 (555) 123-4567
+    - Twitter: [@MorseDecoder](https://twitter.com/MorseDecoder)
+    - GitHub: [github.com/yourname/MorseDecoder](https://github.com/yourname/MorseDecoder)
+    """)
+
+    st.markdown("---")
+    st.markdown(
+        "<div style='text-align:center; color:gray;'>"
+        "© 2025 MorseDecoder. Developed by "
+        "<a style='color:#60a5fa;' href='#'>YourName</a>"
+        "</div>",
+        unsafe_allow_html=True
+    )
