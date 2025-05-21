@@ -8,11 +8,30 @@ import io
 
 st.set_page_config(page_title="Morse Code Translator", layout="centered")
 
-# Sidebar menu for navigation
-page = st.sidebar.selectbox("Navigate", ["Translator", "Facts about Morse Code", "Contact"])
+# Function to render clickable header navigation
+def render_header_nav(selected_page):
+    pages = ["Translator", "Facts", "Contact"]
+    nav_html = "<div style='background-color:#1f2937; padding: 10px 20px; display:flex; justify-content:center; gap:30px;'>"
+    for page in pages:
+        color = "#60a5fa" if page == selected_page else "white"
+        nav_html += f"""
+            <a href='?page={page.lower()}' 
+            style='color:{color}; text-decoration:none; font-weight:bold; font-size:18px;'>
+            {page}
+            </a>
+        """
+    nav_html += "</div><hr style='border-color:#111827;'/>"
+    st.markdown(nav_html, unsafe_allow_html=True)
 
-if page == "Translator":
-    # Header
+# Detect current page from URL query params
+query_params = st.experimental_get_query_params()
+page = query_params.get("page", ["translator"])[0]
+
+# Render header nav bar
+render_header_nav(page.capitalize())
+
+# Page logic
+if page == "translator":
     st.markdown(
         """
         <style>
@@ -30,10 +49,8 @@ if page == "Translator":
     st.markdown("<p style='text-align:center;'>Convert Morse code from <b>Text</b>, <b>Image</b>, or <b>Audio</b> to English.</p>", unsafe_allow_html=True)
     st.markdown("---")
 
-    # Tabs for input methods
     tabs = st.tabs(["📝 Text Input", "🖼️ Image Input", "🎧 Audio Input"])
 
-    # --- Tab 1: Text Input ---
     with tabs[0]:
         mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text"])
 
@@ -49,7 +66,6 @@ if page == "Translator":
                 text_output = morse_to_text(morse_input)
                 st.code(text_output, language='text')
 
-    # --- Tab 2: Image Input ---
     with tabs[1]:
         def ocr_image_from_url(image_bytes):
             response = requests.post(
@@ -67,20 +83,16 @@ if page == "Translator":
             st.write("🔍 Extracted Text:")
             st.code(extracted_text.strip())
 
-            # Detect if extracted text looks like morse (only dots, dashes, spaces, slashes)
             morse_chars = set(".-/ ")
             if set(extracted_text.strip()).issubset(morse_chars):
-                # Probably Morse code -> translate to English
                 text_output = morse_to_text(extracted_text.strip())
                 st.write("🔤 Translated Text:")
                 st.code(text_output)
             else:
-                # Probably English text -> translate to Morse
                 morse_output = text_to_morse(extracted_text.strip())
                 st.write("📡 Morse Code:")
                 st.code(morse_output)
 
-    # --- Tab 3: Audio Input ---
     with tabs[2]:
         uploaded_audio = st.file_uploader("Upload a Morse code audio (.wav)", type=["wav"])
         if uploaded_audio:
@@ -122,7 +134,6 @@ if page == "Translator":
             st.write("🔤 Translated Text:")
             st.code(morse_to_text(morse))
 
-    # Footer
     st.markdown("---")
     st.markdown(
         "<div style='text-align:center; color:gray;'>"
@@ -132,7 +143,7 @@ if page == "Translator":
         unsafe_allow_html=True
     )
 
-elif page == "Facts about Morse Code":
+elif page == "facts":
     st.title("📜 Facts about Morse Code")
     st.markdown("""
     - Morse code was invented by Samuel Morse and Alfred Vail in the 1830s.
@@ -143,7 +154,6 @@ elif page == "Facts about Morse Code":
     - Morse code is still used in aviation and amateur radio.
     - It was a vital communication method during World War I and II.
     """)
-
     st.markdown("---")
     st.markdown(
         "<div style='text-align:center; color:gray;'>"
@@ -153,7 +163,7 @@ elif page == "Facts about Morse Code":
         unsafe_allow_html=True
     )
 
-elif page == "Contact":
+elif page == "contact":
     st.title("📞 Contact Information")
     st.markdown("""
     If you have questions or want to get in touch, please contact us at:
@@ -163,7 +173,6 @@ elif page == "Contact":
     - Twitter: [@MorseDecoder](https://twitter.com/MorseDecoder)
     - GitHub: [github.com/yourname/MorseDecoder](https://github.com/yourname/MorseDecoder)
     """)
-
     st.markdown("---")
     st.markdown(
         "<div style='text-align:center; color:gray;'>"
