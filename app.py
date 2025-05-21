@@ -13,14 +13,12 @@ st.set_page_config(page_title="Morse Code Translator", layout="centered")
 st.markdown(
     """
     <style>
-    .header {
-        background: linear-gradient(135deg, #1f2937, #111827);
-        padding: 10px 20px;
+    .nav-container {
         display: flex;
-        gap: 30px;
-        align-items: center;
-        font-weight: bold;
-        font-size: 18px;
+        justify-content: center;
+        gap: 40px;
+        padding: 10px 0;
+        background: linear-gradient(135deg, #1f2937, #111827);
     }
     .nav-button {
         background: none;
@@ -40,29 +38,32 @@ st.markdown(
         outline: none;
         color: #2563eb;
     }
-    .page-content {
-        padding: 20px 0 0 0;
-    }
     </style>
     """,
     unsafe_allow_html=True,
 )
-
 # --- Initialize page state ---
 if "page" not in st.session_state:
     st.session_state.page = "home"
+nav_cols = st.columns(1)
 
-# --- Header navigation ---
-cols = st.columns([1,1,1])
-with cols[0]:
-    if st.button("Home", key="nav_home", help="Go to Home"):
-        st.session_state.page = "home"
-with cols[1]:
-    if st.button("Facts", key="nav_facts", help="Go to Facts"):
-        st.session_state.page = "facts"
-with cols[2]:
-    if st.button("Contact", key="nav_contact", help="Go to Contact"):
-        st.session_state.page = "contact"
+with nav_cols[0]:
+    # Use st.markdown to create buttons inside a flex container using HTML + Javascript
+    # But since you want no raw HTML <a>, and Streamlit buttons can’t be styled with flexbox directly,
+    # Instead, use st.button and center with columns:
+
+    col1, col2, col3, col4, col5 = st.columns([1,1,1,1,1])
+    with col1:
+        if st.button("Home", key="nav_home"):
+            st.session_state.page = "home"
+    with col3:
+        if st.button("Facts", key="nav_facts"):
+            st.session_state.page = "facts"
+    with col5:
+        if st.button("Contact", key="nav_contact"):
+            st.session_state.page = "contact"
+
+
 
 st.markdown("<hr>", unsafe_allow_html=True)
 
