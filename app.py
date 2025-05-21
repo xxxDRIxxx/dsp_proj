@@ -23,9 +23,9 @@ def render_header_nav(selected_page):
     nav_html += "</div><hr style='border-color:#111827;'/>"
     st.markdown(nav_html, unsafe_allow_html=True)
 
-# Detect current page from URL query params
-query_params = st.experimental_get_query_params()
-page = query_params.get("page", ["translator"])[0]
+# Detect current page from URL query params using st.query_params
+query_params = st.query_params
+page = query_params.get("page", ["translator"])[0].lower()
 
 # Render header nav bar
 render_header_nav(page.capitalize())
