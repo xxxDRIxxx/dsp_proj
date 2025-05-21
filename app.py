@@ -130,4 +130,4 @@ with tabs[2]:
 
 # Footer
 st.markdown("---")
-st.markdown("<div style='text-align:center; color:gray;'>© 2025 MorseDecoder. Developed by <a style='color:#60a5fa;' href='#'>YourName</a></div>", unsafe_allow_html=True)
+st.write("© 2025 MorseDecoder. Developed by B.D.E.R.")
