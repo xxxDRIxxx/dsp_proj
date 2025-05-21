@@ -103,11 +103,11 @@ if st.session_state.page == "home":
                 morse_output = text_to_morse(formatted_input)
                 st.code(morse_output, language='text')
 
-            elif mode == "Morse to Text":
-                morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
-                if morse_input:
-                    text_output = morse_to_text(morse_input)
-                    st.code(text_output, language='text')
+        elif mode == "Morse to Text":
+            morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
+            if morse_input:
+                text_output = morse_to_text(morse_input)
+                st.code(text_output, language='text')
 
     # --- Tab 2: Image Input ---
     with tabs[1]:
