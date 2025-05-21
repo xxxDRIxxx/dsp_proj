@@ -57,10 +57,10 @@ with nav_cols[0]:
         if st.button("Home", key="nav_home"):
             st.session_state.page = "home"
     with col3:
-        if st.button("Facts", key="nav_facts"):
+        if st.button("Morse Code", key="nav_facts"):
             st.session_state.page = "facts"
     with col5:
-        if st.button("Contact", key="nav_contact"):
+        if st.button("About Us", key="nav_contact"):
             st.session_state.page = "contact"
 
 
