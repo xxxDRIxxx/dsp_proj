@@ -110,6 +110,7 @@ with tabs[0]:
             translation = text_to_morse(user_input)
         else:
             translation = morse_to_text(user_input)
+            st.markdown(morse_table, unsafe_allow_html=True)
         st.success(translation)
 
 # ----------- Tab: FACTS -----------
@@ -126,7 +127,7 @@ with tabs[1]:
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown(morse_table, unsafe_allow_html=True)
+
 
 # ----------- Tab: CONTACT -----------
 with tabs[2]:
