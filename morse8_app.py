@@ -33,72 +33,79 @@ if os.path.exists(bg_path):
 # ----------- Custom CSS -----------
 custom_css = """
 <style>
+/* Navigation Bar */
 .nav-container {
     display: flex;
     justify-content: center;
     gap: 40px;
     padding: 10px 0;
-    background: linear-gradient(135deg, #1f2937, #111827);
+    background-color: rgba(255, 255, 255, 0.85);
+    border-bottom: 2px solid #e0e0e0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .nav-button {
     background: none;
     border: none;
-    color: #60a5fa;
+    color: #0077b6;
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
-    padding: 0;
-    margin: 0;
-    transition: color 0.3s ease;
 }
 
 .nav-button:hover {
-    color: #3b82f6;
+    color: #023e8a;
 }
 
-.nav-button:focus {
-    outline: none;
-    color: #2563eb;
-}
-
+/* Typography */
 h1, h2, h3 {
-    color: #000000;
-    text-shadow: 1px 1px #ffffff;
+    color: #023047;
+    text-shadow: 1px 1px rgba(255,255,255,0.5);
     font-size: 2.5em;
 }
 
-html, body, p, div {
-    color: #d62000 !important;
-    font-size: 18px !important;
+body, html, p, div {
+    color: #333333 !important;
+    font-size: 18px;
     font-family: 'Segoe UI', sans-serif;
 }
 
-.stButton>button {
-    background-color: #152a59;
-    color: white;
+/* Button Style */
+.stButton > button {
+    background-color: #48cae4;
+    color: #ffffff;
     border-radius: 10px;
     padding: 10px 24px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
+    border: none;
     transition: background-color 0.3s ease;
 }
 
-.stButton>button:hover {
-    background-color: #152a59;
+.stButton > button:hover {
+    background-color: #0096c7;
 }
 
+/* Input Boxes */
+textarea, input {
+    background-color: rgba(255,255,255,0.9) !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+}
+
+/* Info Box */
 .info-box {
-    background: rgba(255, 255, 255, 0.65);
-    border-left: 6px solid #7b1fa2;
+    background: rgba(255, 255, 255, 0.85);
+    border-left: 6px solid #48cae4;
     padding: 1.5rem;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
     border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 </style>
 """
+
 st.markdown(custom_css, unsafe_allow_html=True)
 
 # ----------- Session state page manager -----------
