@@ -4,6 +4,8 @@ import requests
 import numpy as np
 from scipy.io import wavfile
 import io
+import os
+import sys
 from morse_utils import text_to_morse, morse_to_text, morse_table  # Custom utility module
 
 # ----------- Page config -----------
