@@ -63,19 +63,19 @@ custom_css = """
 }
 
 h1, h2, h3 {
-    color: #4A0072;
+    color: #000000;
     text-shadow: 1px 1px #ffffff;
     font-size: 2.5em;
 }
 
 html, body, p, div {
-    color: #2e003e !important;
+    color: #d62000 !important;
     font-size: 18px !important;
     font-family: 'Segoe UI', sans-serif;
 }
 
 .stButton>button {
-    background-color: #7b1fa2;
+    background-color: #152a59;
     color: white;
     border-radius: 10px;
     padding: 10px 24px;
@@ -85,7 +85,7 @@ html, body, p, div {
 }
 
 .stButton>button:hover {
-    background-color: #4a0072;
+    background-color: #152a59;
 }
 
 .info-box {
