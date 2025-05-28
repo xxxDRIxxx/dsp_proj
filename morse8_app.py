@@ -125,6 +125,7 @@ with tabs[0]:
     mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text", "Image to Morse/Text", "Morse Audio to Text"])
 
     if mode == "Text to Morse":
+        st.subheader("Text to Morse Translation")
         text_input = st.text_input("Enter English text:")
         if text_input:
             # Replace space with slash to explicitly mark word boundaries
@@ -133,6 +134,7 @@ with tabs[0]:
             st.code(morse_output, language='text')
 
     elif mode == "Morse to Text":
+        st.subheader("Morse Input to Text Decoder")
         morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
         st.markdown(morse_table)
         if morse_input:
@@ -164,6 +166,61 @@ with tabs[0]:
                         st.error(f"Error during translation: {e}")
             else:
                 st.error("No text detected in the image.")
+
+    elif mode == "Morse Audio to Text":
+        st.subheader("🔊 Upload a Morse Code Audio File")
+        audio_file = st.file_uploader("Upload .wav file (700Hz tone, 20 WPM)", type=["wav"])
+
+        if audio_file is not None:
+            st.audio(audio_file, format="audio/wav")
+
+        # Read and process the audio
+        sample_rate, data = wavfile.read(audio_file)
+
+        if len(data.shape) > 1:
+            data = data[:, 0]  # Use mono if stereo
+
+        # Normalize audio and apply threshold
+        data = data / np.max(np.abs(data))
+        threshold = 0.2  # equivalent to ~ -30 dB
+
+        signal = np.where(np.abs(data) > threshold, 1, 0)
+
+        # Detect durations
+        diffs = np.diff(signal)
+        transitions = np.where(diffs != 0)[0]
+        durations = np.diff(np.concatenate(([0], transitions, [len(signal)])))
+
+        # Determine dots/dashes based on duration (at 20 WPM, dot ~ 60ms)
+        time_per_sample = 1 / sample_rate
+        time_per_unit = 1.2 / 20  # 60ms
+        symbols = []
+
+        for i, dur in enumerate(durations[1:-1:2]):  # Only 'high' signals
+            duration_secs = dur * time_per_sample
+            if duration_secs < time_per_unit * 1.5:
+                symbols.append(".")
+            else:
+                symbols.append("-")
+
+            # Add spacing
+            if i < len(durations[1:-1:2]) - 1:
+                space_dur = durations[2 + i*2] * time_per_sample
+                if space_dur > time_per_unit * 6:
+                    symbols.append(" / ")
+                elif space_dur > time_per_unit * 2:
+                    symbols.append(" ")
+
+        morse_string = "".join(symbols)
+        st.write("📡 Detected Morse Code:")
+        st.code(morse_string)
+
+        try:
+            translated_text = morse_to_text(morse_string)
+            st.write("🔤 Translated Text:")
+            st.code(translated_text)
+        except Exception as e:
+            st.error(f"Error translating Morse: {e}")
 
 # ----------- Tab: FACTS -----------
 with tabs[1]:
