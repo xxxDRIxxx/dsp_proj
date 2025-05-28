@@ -138,7 +138,7 @@ with tabs[0]:
             st.code(text_output, language='text')
 
     elif mode == "Image to Morse/Text":
-    st.subheader("📷 Image to Morse/Text")
+        st.subheader("📷 Image to Morse/Text")
 
         uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
         if uploaded_image:
