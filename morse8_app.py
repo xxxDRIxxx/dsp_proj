@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 import os
-from morse_utils import text_to_morse, morse_to_text, morse_table  # ⬅️ import from your utility file
+from morse_utils import text_to_morse, morse_to_text, morse_table  # Custom utility module
 
 # ----------- Page config -----------
 st.set_page_config(page_title="Morse Code Translator 📡", layout="wide")
@@ -22,8 +22,6 @@ def set_background(image_path):
         background-attachment: fixed;
         background-repeat: no-repeat;
     }}
-    
-    /* Centering nav bar */
     .nav-container {{
         display: flex;
         justify-content: center;
@@ -45,8 +43,6 @@ def set_background(image_path):
     .nav-button:hover {{
         color: #90e0ef;
     }}
-
-    /* Headings and body text */
     h1, h2, h3 {{
         color: #ffffff;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
@@ -57,8 +53,6 @@ def set_background(image_path):
         font-size: 18px;
         font-family: 'Segoe UI', sans-serif;
     }}
-
-    /* Buttons */
     .stButton > button {{
         background-color: #00b4d8;
         color: #ffffff;
@@ -72,15 +66,11 @@ def set_background(image_path):
     .stButton > button:hover {{
         background-color: #0077b6;
     }}
-
-    /* Input fields */
     textarea, input {{
         background-color: rgba(255,255,255,0.9) !important;
         color: #000000 !important;
         border: 1px solid #cccccc !important;
     }}
-
-    /* Info box (e.g., Morse table) */
     .info-box {{
         background: rgba(255, 255, 255, 0.85);
         border-left: 6px solid #00b4d8;
@@ -92,38 +82,29 @@ def set_background(image_path):
     }}
     </style>
     """
-
     st.markdown(css, unsafe_allow_html=True)
 
-# set bg path
 bg_path = os.path.join(os.path.dirname(__file__), "bg.jpg")
 if os.path.exists(bg_path):
     set_background(bg_path)
-# ----------- Session state page manager -----------
-if "page" not in st.session_state:
-    st.session_state.page = "home"
 
-# ----------- Navigation -----------
-st.markdown('<div class="nav-container">', unsafe_allow_html=True)
-col1, col2, col3 = st.columns([1, 1, 1])
-with col1:
-    if st.button("Decoder", key="nav_home"):
-        st.session_state.page = "home"
-with col2:
-    if st.button("Facts", key="nav_facts"):
-        st.session_state.page = "facts"
-with col3:
-    if st.button("Contact", key="nav_contact"):
-        st.session_state.page = "contact"
-st.markdown('</div>', unsafe_allow_html=True)
+# ----------- Tabs Setup -----------
+tabs = st.tabs(["DECODER", "FACTS", "CONTACT"])
 
-# ----------- App Pages -----------
-
-def home():
+# ----------- Tab: DECODER -----------
+with tabs[0]:
     st.title("Morse Code Translator")
-    option = st.radio("Choose translation direction:", ("English to Morse", "Morse to English"))
 
+    st.markdown("""
+    <div class='info-box'>
+        <h3>🔤 Translate between English and Morse Code</h3>
+        <p>Choose your direction, enter your message, and click <b>Translate</b> to see the result.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    option = st.radio("Choose translation direction:", ("English to Morse", "Morse to English"))
     user_input = st.text_area("Enter your message:")
+
     if st.button("Translate"):
         if option == "English to Morse":
             translation = text_to_morse(user_input)
@@ -131,35 +112,30 @@ def home():
             translation = morse_to_text(user_input)
         st.success(translation)
 
-def facts():
-    st.title("Fun Morse Code Facts")
+# ----------- Tab: FACTS -----------
+with tabs[1]:
+    st.title("📚 Fun Morse Code Facts")
     st.markdown("""
     <div class='info-box'>
-    <ul>
-        <li>Morse code was developed in the 1830s by Samuel Morse and Alfred Vail.</li>
-        <li>It was first used for telegraph communication.</li>
-        <li>Morse code is still used in aviation and amateur radio today.</li>
-        <li>The distress signal SOS is "... --- ...", chosen for its simplicity.</li>
-    </ul>
+        <ul>
+            <li>Morse code was developed in the 1830s by Samuel Morse and Alfred Vail.</li>
+            <li>It was first used for telegraph communication.</li>
+            <li>Morse code is still used in aviation and amateur radio today.</li>
+            <li>The distress signal SOS is "... --- ...", chosen for its simplicity.</li>
+        </ul>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown(morse_table, unsafe_allow_html=True)
 
-def contact():
-    st.title("Contact")
+# ----------- Tab: CONTACT -----------
+with tabs[2]:
+    st.title("📬 Contact Us")
     st.markdown("""
     <div class='info-box'>
-    If you have questions, feedback, or suggestions, feel free to reach out at:<br><br>
-    📧 Email: example@email.com<br>
-    🌐 Website: [example.com](https://example.com)
+        <p><strong>Developed by:</strong> Alexine, Lyca, Fredric, and Kit ^^</p>
+        <p><strong>GitHub</strong>: <a href='https://github.com/shinkairu' target='_blank'>github.com/shinkairu</a></p>
+        <p><strong>Email</strong>: bestgroupever@gmail.com</p>
+        <blockquote>This is a sample Streamlit prototype for our Data Science Project. Thank you for visiting!</blockquote>
     </div>
     """, unsafe_allow_html=True)
-
-# ----------- Render Selected Page -----------
-if st.session_state.page == "home":
-    home()
-elif st.session_state.page == "facts":
-    facts()
-elif st.session_state.page == "contact":
-    contact()
