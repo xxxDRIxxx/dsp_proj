@@ -30,6 +30,11 @@ morse_table = """
 
 inverse_dict = {v: k for k, v in morse_dict.items()}
 
+def ocr_image_from_url(uploaded_file):
+    image = Image.open(uploaded_file)
+    text = pytesseract.image_to_string(image)
+    return text
+
 def text_to_morse(text):
     words = text.strip().split()
     morse_words = []
