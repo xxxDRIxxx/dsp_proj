@@ -22,92 +22,83 @@ def set_background(image_path):
         background-attachment: fixed;
         background-repeat: no-repeat;
     }}
+    
+    /* Centering nav bar */
+    .nav-container {{
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        padding: 10px 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-bottom: 2px solid #ffffff33;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }}
+    .nav-button {{
+        background: none;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+    }}
+    .nav-button:hover {{
+        color: #90e0ef;
+    }}
+
+    /* Headings and body text */
+    h1, h2, h3 {{
+        color: #ffffff;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        font-size: 2.5em;
+    }}
+    body, html, p, div {{
+        color: #ffffff !important;
+        font-size: 18px;
+        font-family: 'Segoe UI', sans-serif;
+    }}
+
+    /* Buttons */
+    .stButton > button {{
+        background-color: #00b4d8;
+        color: #ffffff;
+        border-radius: 10px;
+        padding: 10px 24px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        transition: background-color 0.3s ease;
+    }}
+    .stButton > button:hover {{
+        background-color: #0077b6;
+    }}
+
+    /* Input fields */
+    textarea, input {{
+        background-color: rgba(255,255,255,0.9) !important;
+        color: #000000 !important;
+        border: 1px solid #cccccc !important;
+    }}
+
+    /* Info box (e.g., Morse table) */
+    .info-box {{
+        background: rgba(255, 255, 255, 0.85);
+        border-left: 6px solid #00b4d8;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }}
     </style>
     """
+
     st.markdown(css, unsafe_allow_html=True)
 
+# set bg path
 bg_path = os.path.join(os.path.dirname(__file__), "bg.jpg")
 if os.path.exists(bg_path):
     set_background(bg_path)
-
-# ----------- Custom CSS -----------
-custom_css = """
-<style>
-/* Navigation Bar */
-.nav-container {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    padding: 10px 0;
-    background-color: rgba(255, 255, 255, 0.85);
-    border-bottom: 2px solid #e0e0e0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.nav-button {
-    background: none;
-    border: none;
-    color: #0077b6;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.nav-button:hover {
-    color: #023e8a;
-}
-
-/* Typography */
-h1, h2, h3 {
-    color: #023047;
-    text-shadow: 1px 1px rgba(255,255,255,0.5);
-    font-size: 2.5em;
-}
-
-body, html, p, div {
-    color: #333333 !important;
-    font-size: 18px;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-/* Button Style */
-.stButton > button {
-    background-color: #48cae4;
-    color: #ffffff;
-    border-radius: 10px;
-    padding: 10px 24px;
-    font-size: 18px;
-    font-weight: bold;
-    border: none;
-    transition: background-color 0.3s ease;
-}
-
-.stButton > button:hover {
-    background-color: #0096c7;
-}
-
-/* Input Boxes */
-textarea, input {
-    background-color: rgba(255,255,255,0.9) !important;
-    color: #000000 !important;
-    border: 1px solid #cccccc !important;
-}
-
-/* Info Box */
-.info-box {
-    background: rgba(255, 255, 255, 0.85);
-    border-left: 6px solid #48cae4;
-    padding: 1.5rem;
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-</style>
-"""
-
-st.markdown(custom_css, unsafe_allow_html=True)
-
 # ----------- Session state page manager -----------
 if "page" not in st.session_state:
     st.session_state.page = "home"
