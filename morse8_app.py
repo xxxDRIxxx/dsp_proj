@@ -117,16 +117,22 @@ with tabs[0]:
     </div>
     """, unsafe_allow_html=True)
 
-    option = st.radio("Choose translation direction:", ("English to Morse", "Morse to English"))
-    user_input = st.text_area("Enter your message:")
+    mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text"])
 
-    if st.button("Translate"):
-        if option == "English to Morse":
-            translation = text_to_morse(user_input)
-        else:
-            st.markdown(morse_table, unsafe_allow_html=True)
-            translation = morse_to_text(user_input)
-        st.success(translation)
+    if mode == "Text to Morse":
+        text_input = st.text_input("Enter English text:")
+        if text_input:
+            # Replace space with slash to explicitly mark word boundaries
+            formatted_input = text_input.strip().replace(" ", " / ")
+            morse_output = text_to_morse(formatted_input)
+            st.code(morse_output, language='text')
+
+    elif mode == "Morse to Text":
+        morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
+        st.markdown(morse_table)
+        if morse_input:
+            text_output = morse_to_text(morse_input)
+            st.code(text_output, language='text')
 
 # ----------- Tab: FACTS -----------
 with tabs[1]:
