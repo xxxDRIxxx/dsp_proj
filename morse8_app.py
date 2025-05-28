@@ -1,6 +1,9 @@
 import streamlit as st
-import base64
-import os
+from PIL import Image
+import requests
+import numpy as np
+from scipy.io import wavfile
+import io
 from morse_utils import text_to_morse, morse_to_text, morse_table  # Custom utility module
 
 # ----------- Page config -----------
@@ -117,7 +120,7 @@ with tabs[0]:
     </div>
     """, unsafe_allow_html=True)
 
-    mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text"])
+    mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text", "Image to Morse/Text", "Morse Audio to Text"])
 
     if mode == "Text to Morse":
         text_input = st.text_input("Enter English text:")
@@ -133,6 +136,32 @@ with tabs[0]:
         if morse_input:
             text_output = morse_to_text(morse_input)
             st.code(text_output, language='text')
+
+    elif mode == "Image to Morse/Text":
+    st.subheader("📷 Image to Morse/Text")
+
+        uploaded_image = st.file_uploader("Upload an image with Morse or English text", type=["png", "jpg", "jpeg"])
+        if uploaded_image:
+            st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+            extracted_text = ocr_image_from_url(uploaded_image)
+            if extracted_text:
+                st.write("🔍 Extracted Text:")
+                st.code(extracted_text.strip())
+
+                if any(c in extracted_text for c in ['.', '-', '/', ' '] + list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")):
+                    try:
+                        if any(c in extracted_text for c in ['.', '-', '/']):
+                            decoded = morse_to_text(extracted_text)
+                            st.write("🔤 Translated Text:")
+                            st.code(decoded)
+                        else:
+                            morse_output = text_to_morse(extracted_text)
+                            st.write("📡 Morse Code:")
+                            st.code(morse_output)
+                    except Exception as e:
+                        st.error(f"Error during translation: {e}")
+            else:
+                st.error("No text detected in the image.")
 
 # ----------- Tab: FACTS -----------
 with tabs[1]:
