@@ -79,6 +79,10 @@ def set_background(image_path):
         margin-bottom: 1.5rem;
         border-radius: 15px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        color: #000000 !important;
+    }}
+    .info-box h1, .info-box h2, .info-box h3, .info-box p, .info-box li {{
+        color: #000000 !important;
     }}
     </style>
     """
