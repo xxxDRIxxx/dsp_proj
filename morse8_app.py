@@ -124,8 +124,8 @@ with tabs[0]:
         if option == "English to Morse":
             translation = text_to_morse(user_input)
         else:
-            translation = morse_to_text(user_input)
             st.markdown(morse_table, unsafe_allow_html=True)
+            translation = morse_to_text(user_input)
         st.success(translation)
 
 # ----------- Tab: FACTS -----------
