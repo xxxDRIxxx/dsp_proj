@@ -22,6 +22,9 @@ def set_background(image_path):
         background-attachment: fixed;
         background-repeat: no-repeat;
     }}
+    .css-1bzp7po {{
+        justify-content: center !important;
+    }}
     .nav-container {{
         display: flex;
         justify-content: center;
@@ -31,17 +34,25 @@ def set_background(image_path):
         border-bottom: 2px solid #ffffff33;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }}
-    .nav-button {{
-        background: none;
-        border: none;
-        color: #ffffff;
-        cursor: pointer;
-        font-size: 18px;
+    button[data-baseweb="tab"] {{
+        background-color: rgba(255, 255, 255, 0.65);
+        border: 2px solid #7b1fa2;
+        color: #4A0072;
         font-weight: bold;
-        padding: 0.5rem 1rem;
+        padding: 10px 20px;
+        border-radius: 12px;
+        margin: 5px;
+        transition: all 0.3s ease;
     }}
-    .nav-button:hover {{
-        color: #90e0ef;
+    button[data-baseweb="tab"]:hover {{
+        background-color: #e1bee7;
+        border-color: #4a0072;
+        color: #2e003e;
+    }}
+    button[data-baseweb="tab"][aria-selected="true"] {{
+        background-color: #7b1fa2;
+        color: white;
+        border-color: #4a0072;
     }}
     h1, h2, h3 {{
         color: #ffffff;
