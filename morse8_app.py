@@ -168,6 +168,7 @@ with tabs[0]:
                 st.error("No text detected in the image.")
 
     elif mode == "Morse Audio to Text":
+        st.subheader("Morse Audio to Text")
         audio_file = st.file_uploader("Upload a Morse code WAV audio file", type=["wav"])
     
         if audio_file is not None:
