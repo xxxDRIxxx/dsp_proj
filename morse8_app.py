@@ -142,16 +142,14 @@ with tabs[1]:
     </div>
     """, unsafe_allow_html=True)
 
-
-
 # ----------- Tab: CONTACT -----------
 with tabs[2]:
     st.title("📬 Contact Us")
     st.markdown("""
     <div class='info-box'>
-        <p><strong>Developed by:</strong> Alexine, Lyca, Fredric, and Kit ^^</p>
+        <p><strong>Developed by:</strong> Group 1 - Adrian Bangalando, Keith Del Carmen, Denisse Escape, and Louie Rizo</p>
         <p><strong>GitHub</strong>: <a href='https://github.com/shinkairu' target='_blank'>github.com/shinkairu</a></p>
-        <p><strong>Email</strong>: bestgroupever@gmail.com</p>
-        <blockquote>This is a sample Streamlit prototype for our Data Science Project. Thank you for visiting!</blockquote>
+        <p><strong>Email</strong>: group1_BDER@gmail.com</p>
+        <blockquote>This project is specifically for our DSP Course! All thanks to Dr. Jonathan Taylar for guiding us! Thank you!</blockquote>
     </div>
     """, unsafe_allow_html=True)
