@@ -31,7 +31,14 @@ morse_table = """
 inverse_dict = {v: k for k, v in morse_dict.items()}
 
 def text_to_morse(text):
-    return ' '.join(morse_dict.get(char.upper(), '') for char in text if char.upper() in morse_dict)
+    words = text.strip().split()
+    morse_words = []
+
+    for word in words:
+        morse_letters = [morse_dict.get(char.upper(), '') for char in word if char.upper() in morse_dict]
+        morse_words.append(' '.join(morse_letters))
+
+    return ' / '.join(morse_words)
 
 def morse_to_text(code):
     words = code.strip().split(' / ')
