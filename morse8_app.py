@@ -168,59 +168,55 @@ with tabs[0]:
                 st.error("No text detected in the image.")
 
     elif mode == "Morse Audio to Text":
-        st.subheader("🔊 Upload a Morse Code Audio File")
-        audio_file = st.file_uploader("Upload .wav file (700Hz tone, 20 WPM)", type=["wav"])
-
+        audio_file = st.file_uploader("Upload a Morse code WAV audio file", type=["wav"])
+    
         if audio_file is not None:
             st.audio(audio_file, format="audio/wav")
 
-        # Read and process the audio
-        sample_rate, data = wavfile.read(audio_file)
+            sample_rate, data = wavfile.read(audio_file)
 
-        if len(data.shape) > 1:
-            data = data[:, 0]  # Use mono if stereo
+            if data.ndim > 1:  # Stereo to mono
+                data = data.mean(axis=1)
 
-        # Normalize audio and apply threshold
-        data = data / np.max(np.abs(data))
-        threshold = 0.2  # equivalent to ~ -30 dB
+            duration = len(data) / sample_rate
+            t = np.linspace(0., duration, len(data))
 
-        signal = np.where(np.abs(data) > threshold, 1, 0)
+            volume_threshold = 200
+            tone_mask = np.abs(data) > volume_threshold
+            tone_times = t[tone_mask]
 
-        # Detect durations
-        diffs = np.diff(signal)
-        transitions = np.where(diffs != 0)[0]
-        durations = np.diff(np.concatenate(([0], transitions, [len(signal)])))
-
-        # Determine dots/dashes based on duration (at 20 WPM, dot ~ 60ms)
-        time_per_sample = 1 / sample_rate
-        time_per_unit = 1.2 / 20  # 60ms
-        symbols = []
-
-        for i, dur in enumerate(durations[1:-1:2]):  # Only 'high' signals
-            duration_secs = dur * time_per_sample
-            if duration_secs < time_per_unit * 1.5:
-                symbols.append(".")
+            if len(tone_times) == 0:
+                st.warning("No Morse tones detected. Check the volume threshold or input.")
             else:
-                symbols.append("-")
+                intervals = np.diff(tone_times)
+                unit = np.median(intervals)  # Estimate dot duration
 
-            # Add spacing
-            if i < len(durations[1:-1:2]) - 1:
-                space_dur = durations[2 + i*2] * time_per_sample
-                if space_dur > time_per_unit * 6:
-                    symbols.append(" / ")
-                elif space_dur > time_per_unit * 2:
-                    symbols.append(" ")
+                symbols = []
+                gap_time = 0.3 * unit  # Slight tolerance for gaps
 
-        morse_string = "".join(symbols)
-        st.write("📡 Detected Morse Code:")
-        st.code(morse_string)
+                last_time = tone_times[0]
+                current_symbol = '-'
 
-        try:
-            translated_text = morse_to_text(morse_string)
-            st.write("🔤 Translated Text:")
-            st.code(translated_text)
-        except Exception as e:
-            st.error(f"Error translating Morse: {e}")
+                for current_time in tone_times[1:]:
+                    gap = current_time - last_time
+                    if gap < gap_time:
+                        current_symbol += '-'
+                    else:
+                        symbols.append(current_symbol)
+                        current_symbol = '-'
+                    last_time = current_time
+                symbols.append(current_symbol)
+
+                morse_sequence = ' '.join(symbols)
+                st.write("🔊 Detected Morse:")
+                st.code(morse_sequence)
+
+                translated = morse_to_text(morse_sequence)
+                st.write("📄 Decoded Text:")
+                st.code(translated)
+        else:
+            st.info("Please upload a `.wav` file to decode Morse audio.")
+
 
 # ----------- Tab: FACTS -----------
 with tabs[1]:
