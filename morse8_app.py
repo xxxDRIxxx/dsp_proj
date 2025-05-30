@@ -145,7 +145,7 @@ with tabs[0]:
             morse_output = text_to_morse(formatted_input)
             st.code(morse_output, language='text')
 
-    elif mode == "MORSE to TEXT",:
+    elif mode == "MORSE to TEXT":
         st.subheader("🌐 Morse Input to Text Decoder")
 
         col1, col2 = st.columns([1.2, 1.8])
