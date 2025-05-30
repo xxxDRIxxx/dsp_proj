@@ -1,4 +1,4 @@
-pytesseract
+easyocr
 Pillow
 numpy
 scipy
