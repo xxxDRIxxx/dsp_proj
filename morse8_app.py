@@ -6,7 +6,7 @@ import sys
 import base64
 
 import time
-import pytesseract
+import easyocr
 from PIL import Image
 import requests
 
@@ -114,6 +114,8 @@ bg_path = os.path.join(os.path.dirname(__file__), "bg.jpg")
 if os.path.exists(bg_path):
     set_background(bg_path)
 
+reader = easyocr.Reader(['en'])  
+
 # ----------- Tabs Setup -----------
 tabs = st.tabs(["DECODER", "FACTS", "CONTACT"])
 
@@ -163,20 +165,21 @@ with tabs[0]:
         st.subheader("📷 Image to Morse/Text")
 
         uploaded_image = st.file_uploader(
-            "Upload an image containing Morse or English text", 
+            "Upload an image containing Morse or English text",
             type=["png", "jpg", "jpeg"]
         )
 
         if uploaded_image:
-            st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+            image = Image.open(uploaded_image).convert("RGB")
+            st.image(image, caption="Uploaded Image", use_container_width=True)
 
             try:
-                image = Image.open(uploaded_image).convert("L")
-                image.thumbnail((1000, 1000))
+                np_image = np.array(image)
 
                 with st.spinner("🔍 Extracting text from image..."):
                     start_time = time.time()
-                    extracted_text = pytesseract.image_to_string(image).strip()
+                    result = reader.readtext(np_image, detail=0)
+                    extracted_text = " ".join(result).strip()
                     elapsed = time.time() - start_time
 
                 if not extracted_text:
@@ -202,7 +205,7 @@ with tabs[0]:
 
             except Exception as e:
                 st.error(f"❌ OCR or image processing failed: {e}")
-
+                
     elif mode == "Morse Audio to Text":
         st.subheader("Morse Audio to Text")
         audio_file = st.file_uploader("Upload a Morse code WAV audio file", type=["wav"])
