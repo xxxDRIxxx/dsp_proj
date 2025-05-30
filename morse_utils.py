@@ -82,14 +82,13 @@ def extract_morse_units(signal, fs, threshold=0.1, wpm=15):
     envelope = np.abs(hilbert(signal))
     on = envelope > (np.max(envelope) * threshold)
 
-    dot_duration = 60 / (50 * wpm)  # dot duration in seconds
+    dot_duration = 60 / (50 * wpm) * 0.85  # 15% shorter for tighter timing
     unit_samples = int(dot_duration * fs)
 
     changes = np.diff(on.astype(int))
     starts = np.where(changes == 1)[0]
     ends = np.where(changes == -1)[0]
 
-    # Fix edge misalignment
     if ends.size > 0 and starts.size > 0:
         if ends[0] < starts[0]:
             ends = ends[1:]
@@ -106,10 +105,9 @@ def extract_morse_units(signal, fs, threshold=0.1, wpm=15):
 
         if i < len(starts) - 1:
             gap = (starts[i + 1] - ends[i]) / fs
-            print(f"Gap {i}: {gap:.3f} sec")  # Debug line
-            if gap > dot_duration * 6:
+            if gap > dot_duration * 5:  # word gap
                 morse.append(' / ')
-            elif gap > dot_duration * 2:
+            elif gap > dot_duration * 1.5:  # letter gap
                 morse.append(' ')
-                
+
     return ''.join(morse)
