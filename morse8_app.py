@@ -13,6 +13,7 @@ import requests
 import numpy as np
 from scipy.io import wavfile
 from morse_utils import text_to_morse, morse_to_text, morse_table, ocr_image_from_url
+from morse_utils import bandpass_filter, extract_morse_units
 
 # ----------- Page config -----------
 st.set_page_config(page_title="Morse Code Translator 📡", layout="wide")
