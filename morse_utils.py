@@ -33,10 +33,22 @@ morse_table = """
 
 inverse_dict = {v: k for k, v in morse_dict.items()}
 
-def ocr_image_from_url(uploaded_file):
-    image = Image.open(uploaded_file)
-    text = pytesseract.image_to_string(image)
-    return text
+def ocr_image_from_url(image_file):
+    payload = {
+        'apikey': 'helloworld',  # Replace with your own API key for better quota
+        'language': 'eng',
+    }
+    files = {
+        'filename': (image_file.name, image_file.getvalue(), image_file.type)
+    }
+    response = requests.post('https://api.ocr.space/parse/image', files=files, data=payload)
+    result = response.json()
+    if 'ParsedResults' in result and result['ParsedResults']:
+        return result['ParsedResults'][0]['ParsedText']
+    else:
+        # Optionally log errors:
+        # st.error("OCR API error: " + result.get('ErrorMessage', 'Unknown error'))
+        return ''
 
 def text_to_morse(text):
     words = text.strip().split()
