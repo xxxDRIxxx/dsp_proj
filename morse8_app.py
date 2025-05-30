@@ -222,11 +222,17 @@ with tabs[0]:
             if data.ndim > 1:
                 data = data.mean(axis=1)  # Convert stereo to mono
 
+            # Add pre-roll silence (200ms)
+            preroll_duration = 0.2  # seconds
+            preroll_samples = int(fs * preroll_duration)
+            preroll = np.zeros(preroll_samples)
+            data = np.concatenate([preroll, data])
+
             st.info("🔍 Extracting and filtering tone at ~550Hz...")
             filtered = bandpass_filter(data, fs)
 
-            st.info("📏 Detecting Morse timing...")
-            morse_code = extract_morse_units(filtered, fs, wpm=20)
+            st.info("📏 Detecting Morse timing (Farnsworth speed = 15 WPM)...")
+            morse_code = extract_morse_units(filtered, fs, wpm=15)
 
             st.success("🔊 Morse Detected:")
             st.code(morse_code)
@@ -237,7 +243,7 @@ with tabs[0]:
                 st.code(text)
             except Exception as e:
                 st.error(f"❌ Error decoding Morse: {e}")
-
+                
 # ----------- Tab: FACTS -----------
 with tabs[1]:
     st.title("📚 Fun Morse Code Facts")
