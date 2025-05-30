@@ -276,7 +276,7 @@ with tabs[1]:
         """, unsafe_allow_html=True)
 
     with col2:
-        st.image("img1.jpg", caption="International Morse Code Chart", use_column_width=True)
+        st.image("img1.jpg", use_container_width=True)
 
     st.markdown("---")
     st.title("❓ Decoder Input Guidelines & FAQs")
