@@ -33,12 +33,18 @@ def set_background(image_path):
         background-attachment: fixed;
         background-repeat: no-repeat;
     }}
-    .block-container {{
-        max-width: 900px;
-        margin: 0 auto;
-        padding-top: 2rem;
+    .css-1bzp7po {{
+        justify-content: center !important;
     }}
-
+    .nav-container {{
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        padding: 10px 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-bottom: 2px solid #ffffff33;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }}
     button[data-baseweb="tab"] {{
         background-color: rgba(255, 255, 255, 0.65);
         border: 2px solid #7b1fa2;
@@ -59,7 +65,6 @@ def set_background(image_path):
         color: white;
         border-color: #4a0072;
     }}
-
     h1, h2, h3 {{
         color: #ffffff;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
@@ -101,10 +106,6 @@ def set_background(image_path):
     .info-box h1, .info-box h2, .info-box h3, .info-box p, .info-box li {{
         color: #000000 !important;
     }}
-    @keyframes fadeIn {{
-        from {{ opacity: 0; transform: translateY(20px); }}
-        to {{ opacity: 1; transform: translateY(0); }}
-    }}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
@@ -116,11 +117,11 @@ if os.path.exists(bg_path):
 reader = easyocr.Reader(['en'])  
 
 # ----------- Tabs Setup -----------
-tab_selection = st.sidebar.radio("Navigate", ["🧠 DECODER", "📚 FACTS", "📞 CONTACT US"])
+tabs = st.tabs(["DECODER", "FACTS", "CONTACT"])
 
 # ----------- Tab: DECODER -----------
 with tabs[0]:
-    st.title("📋🔤🤖 Morse Code Translator")
+    st.title("Morse Code Translator")
 
     st.markdown("""
     <div class='info-box'>
@@ -131,7 +132,7 @@ with tabs[0]:
 
     mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text", "Image to Morse/Text", "Morse Audio to Text"])
 
-    if mode == "🧾 Text to Morse":
+    if mode == "Text to Morse":
         st.subheader("Text to Morse Translation")
         text_input = st.text_input("Enter English text:")
         if text_input:
@@ -140,7 +141,7 @@ with tabs[0]:
             morse_output = text_to_morse(formatted_input)
             st.code(morse_output, language='text')
 
-    elif mode == "🔤 Morse to Text":
+    elif mode == "Morse to Text":
         st.subheader("🌐 Morse Input to Text Decoder")
 
         col1, col2 = st.columns([1.2, 1.8])
@@ -164,7 +165,7 @@ with tabs[0]:
         st.subheader("📷 Image to Morse/Text")
 
         uploaded_image = st.file_uploader(
-            "⚠️ Upload an image containing Morse or English text",
+            "Upload an image containing Morse or English text",
             type=["png", "jpg", "jpeg"]
         )
 
@@ -254,7 +255,7 @@ with tabs[0]:
                 st.write("📄 Decoded Text:")
                 st.code(translated)
         else:
-            st.info("💡 Please upload a `.wav` file to decode Morse audio.")
+            st.info("Please upload a `.wav` file to decode Morse audio.")
 
 
 # ----------- Tab: FACTS -----------
@@ -273,7 +274,7 @@ with tabs[1]:
 
 # ----------- Tab: CONTACT -----------
 with tabs[2]:
-    st.title("📬📞 Contact Us")
+    st.title("📬 Contact Us")
     st.markdown("""
     <div class='info-box'>
         <p><strong>Developed by:</strong> Group 1 - Adrian Bangalando, Keith Del Carmen, Denisse Escape, and Louie Rizo</p>
