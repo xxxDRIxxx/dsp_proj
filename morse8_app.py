@@ -7,6 +7,7 @@ from scipy.io import wavfile
 import io
 import os
 import sys
+import base64
 from morse_utils import text_to_morse, morse_to_text, morse_table, ocr_image_from_url
 
 # ----------- Page config -----------
