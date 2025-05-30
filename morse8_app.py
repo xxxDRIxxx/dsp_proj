@@ -34,15 +34,11 @@ def set_background(image_path):
         background-repeat: no-repeat;
     }}
     .block-container {{
+        max-width: 900px;
+        margin: 0 auto;
         padding-top: 2rem;
     }}
-    /* Center the entire tab layout */
-    [data-testid="stTabs"] > div {{
-        display: flex;
-        justify-content: center;
-    }}
 
-    /* Style the actual tabs */
     button[data-baseweb="tab"] {{
         background-color: rgba(255, 255, 255, 0.65);
         border: 2px solid #7b1fa2;
@@ -120,7 +116,7 @@ if os.path.exists(bg_path):
 reader = easyocr.Reader(['en'])  
 
 # ----------- Tabs Setup -----------
-tabs = st.tabs(["🤖 DECODER", "💬 FACTS", "🔧 CONTACT"])
+tab_selection = st.sidebar.radio("Navigate", ["🧠 DECODER", "📚 FACTS", "📞 CONTACT US"])
 
 # ----------- Tab: DECODER -----------
 with tabs[0]:
