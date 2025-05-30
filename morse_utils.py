@@ -1,4 +1,8 @@
 import requests
+import numpy as np
+import streamlit as st
+from scipy.io import wavfile
+from scipy.signal import butter, filtfilt, hilbert
 
 morse_dict = {
     'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
@@ -66,3 +70,42 @@ def morse_to_text(code):
         letters = word.strip().split()
         decoded_words.append(''.join(inverse_dict.get(l, '') for l in letters))
     return ' '.join(decoded_words)
+
+def bandpass_filter(data, fs, lowcut=500, highcut=600, order=5):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = butter(order, [low, high], btype='band')
+    return filtfilt(b, a, data)
+
+def extract_morse_units(signal, fs, threshold=0.1, wpm=20):
+    envelope = np.abs(hilbert(signal))
+    on = envelope > (np.max(envelope) * threshold)
+    
+    dot_duration = 60 / (50 * wpm)  # 20 WPM dot = 60/1000 = 0.06s
+    unit_samples = int(dot_duration * fs)
+    
+    changes = np.diff(on.astype(int))
+    starts = np.where(changes == 1)[0]
+    ends = np.where(changes == -1)[0]
+
+    if ends.size == 0 or starts.size == 0 or ends[0] < starts[0]:
+        ends = ends[1:] if ends[0] < starts[0] else ends
+        starts = starts[:len(ends)]
+
+    morse = ""
+    for i in range(len(starts)):
+        duration = (ends[i] - starts[i]) / fs
+        if duration < dot_duration * 1.5:
+            morse += '.'
+        else:
+            morse += '-'
+
+        if i < len(starts) - 1:
+            gap = (starts[i + 1] - ends[i]) / fs
+            if gap > dot_duration * 6:
+                morse += ' / '     # Word gap
+            elif gap > dot_duration * 2:
+                morse += ' '       # Letter gap
+
+    return morse
