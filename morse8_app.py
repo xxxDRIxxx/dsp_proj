@@ -136,13 +136,25 @@ with tabs[0]:
             st.code(morse_output, language='text')
 
     elif mode == "Morse to Text":
-        st.subheader("Morse Input to Text Decoder")
-        st.markdown(morse_table)
-        morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
-        if morse_input:
-            text_output = morse_to_text(morse_input)
-            st.code(text_output, language='text')
+        st.subheader("🌐 Morse Input to Text Decoder")
 
+        col1, col2 = st.columns([1.2, 1.8])
+
+        with col1:
+            st.markdown("### Morse Code Table")
+            with st.container(border=True):
+                st.markdown(f"""
+                <div class='morse-table'>{morse_table}</div>
+                """, unsafe_allow_html=True)
+
+        with col2:
+            st.markdown("### Input Morse Code")
+            morse_input = st.text_area("Use `/` for word gaps, space for letters.", height=120)
+                if morse_input:
+                text_output = morse_to_text(morse_input)
+                st.success("✅ Decoded Text")
+                st.code(text_output, language='text')
+                    
     elif mode == "Image to Morse/Text":
         st.subheader("📷 Image to Morse/Text")
 
