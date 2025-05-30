@@ -256,17 +256,47 @@ with tabs[0]:
                 
 # ----------- Tab: FACTS -----------
 with tabs[1]:
-    st.title("📚 Fun Morse Code Facts")
-    st.markdown("""
-    <div class='info-box'>
-        <ul>
-            <li>Morse code was developed in the 1830s by Samuel Morse and Alfred Vail.</li>
-            <li>It was first used for telegraph communication.</li>
-            <li>Morse code is still used in aviation and amateur radio today.</li>
-            <li>The distress signal SOS is "... --- ...", chosen for its simplicity.</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
+    st.title("📚 DETAILS")
+
+    col1, col2 = st.columns([2, 1])  # Text left, image right
+
+    with col1:
+        st.markdown("""
+        <div class='info-box'>
+            <ul>
+                <li>Morse code was developed in the 1830s by Samuel Morse and Alfred Vail.</li>
+                <li>Originally designed for use with the telegraph, it became the first widely adopted digital communication method.</li>
+                <li>Each letter and number is represented by a unique sequence of short and long signals: dots (.) and dashes (-).</li>
+                <li>It's still used in aviation, maritime, and amateur radio communications where voice isn't practical.</li>
+                <li>The distress signal <strong>SOS</strong> ("... --- ...") was chosen for its unmistakable pattern and ease of transmission.</li>
+                <li>Modern Morse code supports both English and non-English characters (via extensions like International Morse).</li>
+                <li>Even today, Morse remains a favorite among enthusiasts for its simplicity and elegance.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.image("3fa1ff78-ba44-4cf6-aeae-555aaa64cd10.png", caption="International Morse Code Chart", use_column_width=True)
+
+    st.markdown("---")
+    st.subheader("❓ Frequently Asked Questions")
+
+    with st.expander("What is Morse code used for today?"):
+        st.write("Morse code is still used in aviation, amateur radio, emergency signaling, and for training purposes.")
+
+    with st.expander("Why is SOS used as a distress signal?"):
+        st.write("Because it’s easy to recognize and transmit: three short, three long, three short signals (... --- ...)")
+
+    with st.expander("Can Morse code be used with light or sound?"):
+        st.write("Yes! Morse code can be transmitted via sound, light (e.g., flashlight), vibration, or visual signals.")
+
+    with st.expander("Is Morse code still taught in the military?"):
+        st.write("It’s not required universally anymore, but it's still taught in some special forces and training programs.")
+
+    with st.expander("What’s the difference between American and International Morse code?"):
+        st.write("American Morse (Railroad Morse) was used in early telegraphs; International Morse is more standardized and still in use today.")
+
+
 
 # ----------- Tab: CONTACT -----------
 with tabs[2]:
