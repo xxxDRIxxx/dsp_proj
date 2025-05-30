@@ -160,48 +160,48 @@ with tabs[0]:
                 st.code(text_output, language='text')
                     
     elif mode == "Image to Morse/Text":
-    st.subheader("📷 Image to Morse/Text")
+        st.subheader("📷 Image to Morse/Text")
 
-    uploaded_image = st.file_uploader(
-        "Upload an image containing Morse or English text", 
-        type=["png", "jpg", "jpeg"]
-    )
+        uploaded_image = st.file_uploader(
+            "Upload an image containing Morse or English text", 
+            type=["png", "jpg", "jpeg"]
+        )
 
-    if uploaded_image:
-        st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+        if uploaded_image:
+            st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
 
-        try:
-            image = Image.open(uploaded_image).convert("L")
-            image.thumbnail((1000, 1000))
+            try:
+                image = Image.open(uploaded_image).convert("L")
+                image.thumbnail((1000, 1000))
 
-            with st.spinner("🔍 Extracting text from image..."):
-                start_time = time.time()
-                extracted_text = pytesseract.image_to_string(image).strip()
-                elapsed = time.time() - start_time
+                with st.spinner("🔍 Extracting text from image..."):
+                    start_time = time.time()
+                    extracted_text = pytesseract.image_to_string(image).strip()
+                    elapsed = time.time() - start_time
 
-            if not extracted_text:
-                st.error("⚠️ No text detected in the image.")
-            else:
-                st.success(f"✅ Text extracted in {elapsed:.2f}s")
-                st.write("🔍 **Extracted Text:**")
-                st.code(extracted_text)
+                if not extracted_text:
+                    st.error("⚠️ No text detected in the image.")
+                else:
+                    st.success(f"✅ Text extracted in {elapsed:.2f}s")
+                    st.write("🔍 **Extracted Text:**")
+                    st.code(extracted_text)
 
-                is_morse = all(c in ".-/ \n" for c in extracted_text if c.strip())
+                    is_morse = all(c in ".-/ \n" for c in extracted_text if c.strip())
 
-                try:
-                    if is_morse:
-                        decoded = morse_to_text(extracted_text)
-                        st.write("🔤 **Decoded English Text:**")
-                        st.code(decoded)
-                    else:
-                        morse_output = text_to_morse(extracted_text)
-                        st.write("📡 **Encoded Morse Code:**")
-                        st.code(morse_output)
-                except Exception as e:
-                    st.error(f"❌ Error during translation: {e}")
+                    try:
+                        if is_morse:
+                            decoded = morse_to_text(extracted_text)
+                            st.write("🔤 **Decoded English Text:**")
+                            st.code(decoded)
+                        else:
+                            morse_output = text_to_morse(extracted_text)
+                            st.write("📡 **Encoded Morse Code:**")
+                            st.code(morse_output)
+                    except Exception as e:
+                        st.error(f"❌ Error during translation: {e}")
 
-        except Exception as e:
-            st.error(f"❌ OCR or image processing failed: {e}")
+            except Exception as e:
+                st.error(f"❌ OCR or image processing failed: {e}")
 
     elif mode == "Morse Audio to Text":
         st.subheader("Morse Audio to Text")
