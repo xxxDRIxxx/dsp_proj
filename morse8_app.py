@@ -278,98 +278,77 @@ with tabs[1]:
     with col2:
         st.image("img1.jpg", caption="International Morse Code Chart", use_column_width=True)
 
-st.markdown("---")
-st.title("❓ Decoder Input Guidelines & FAQs")
+    st.markdown("---")
+    st.title("❓ Decoder Input Guidelines & FAQs")
 
-st.markdown("""
-<div class='info-box'>
-""", unsafe_allow_html=True)
-
-with st.expander("🔤 TEXT to MORSE - What should I enter?"):
     st.markdown("""
-    &nbsp;&nbsp;- Input can include **A-Z**, **0-9**, and basic punctuation (`. , ? /`).
-    
-    &nbsp;&nbsp;- Unsupported characters will be ignored.
-    
-    &nbsp;&nbsp;- Output is encoded using International Morse Code.
-    
-    &nbsp;&nbsp;- Uses `'/'` for **word separator** and spaces between **letters**.
-    """, unsafe_allow_html=True)
-    
-with st.expander("📡 AUDIO to TEXT - How should I format the audio file?"):
-    st.markdown("""
-    &nbsp;&nbsp;- Format: **WAV (.wav)** only.
-    
-    &nbsp;&nbsp;- Tone: Approximately **550 Hz** sine wave.
-    
-    &nbsp;&nbsp;- Speed: **20 WPM** (Farnsworth speed = **15 WPM**).
-    
-    &nbsp;&nbsp;- Volume: Recommended **40–100%**.
-    
-    &nbsp;&nbsp;- Audio must be clear and not distorted or noisy.
-    
-    &nbsp;&nbsp;- Real-time decoding is not yet supported.
+    <div class='info-box'>
     """, unsafe_allow_html=True)
 
-with st.expander("🖼️ IMAGE to TEXT - What kind of image can I use?"):
-    st.markdown("""
-    &nbsp;&nbsp;- Use a clearly printed or typed **Morse code image** (dots and dashes).
+    with st.expander("🔤 TEXT to MORSE - What should I enter?"):
+        st.markdown("""
+        &nbsp;&nbsp;- Input can include **A-Z**, **0-9**, and basic punctuation (`. , ? /`).
+        &nbsp;&nbsp;- Unsupported characters will be ignored.
+        &nbsp;&nbsp;- Output is encoded using International Morse Code.
+        &nbsp;&nbsp;- Uses `'/'` for **word separator** and spaces between **letters**.
+        """, unsafe_allow_html=True)
     
-    &nbsp;&nbsp;- High contrast and sharpness improve accuracy.
-    
-    &nbsp;&nbsp;- Avoid handwriting, noise, or overlapping symbols.
-    
-    &nbsp;&nbsp;- Works best with clean digital or scanned inputs.
-    """, unsafe_allow_html=True)
+    with st.expander("📡 AUDIO to TEXT - How should I format the audio file?"):
+        st.markdown("""
+        &nbsp;&nbsp;- Format: **WAV (.wav)** only.
+        &nbsp;&nbsp;- Tone: Approximately **550 Hz** sine wave.
+        &nbsp;&nbsp;- Speed: **20 WPM** (Farnsworth speed = **15 WPM**).
+        &nbsp;&nbsp;- Volume: Recommended **40–100%**.
+        &nbsp;&nbsp;- Audio must be clear and not distorted or noisy.
+        &nbsp;&nbsp;- Real-time decoding is not yet supported.
+        """, unsafe_allow_html=True)
 
-with st.expander("🌐 MORSE to TEXT - What Morse format can I paste?"):
-    st.markdown("""
-    &nbsp;&nbsp;- Use **dots (.)** and **dashes (-)** to represent Morse letters.
-    
-    &nbsp;&nbsp;- Separate **letters with spaces** and **words with ' / '**.
-    
-    &nbsp;&nbsp;- Example: `.... . .-.. .-.. --- / .-- --- .-. .-.. -..` → `HELLO WORLD`
-    
-    &nbsp;&nbsp;- Avoid unknown symbols — they may break decoding.
-    """, unsafe_allow_html=True)
+    with st.expander("🖼️ IMAGE to TEXT - What kind of image can I use?"):
+        st.markdown("""
+        &nbsp;&nbsp;- Use a clearly printed or typed **Morse code image** (dots and dashes).
+        &nbsp;&nbsp;- High contrast and sharpness improve accuracy.
+        &nbsp;&nbsp;- Avoid handwriting, noise, or overlapping symbols.
+        &nbsp;&nbsp;- Works best with clean digital or scanned inputs.
+        """, unsafe_allow_html=True)
 
-st.subheader("🛠️ General Troubleshooting")
+    with st.expander("🌐 MORSE to TEXT - What Morse format can I paste?"):
+        st.markdown("""
+        &nbsp;&nbsp;- Use **dots (.)** and **dashes (-)** to represent Morse letters.
+        &nbsp;&nbsp;- Separate **letters with spaces** and **words with ' / '**.
+        &nbsp;&nbsp;- Example: `.... . .-.. .-.. --- / .-- --- .-. .-.. -..` → `HELLO WORLD`
+        &nbsp;&nbsp;- Avoid unknown symbols — they may break decoding.
+        """, unsafe_allow_html=True)
 
-with st.expander("Why is my Morse not decoding correctly?"):
-    st.markdown("""
-    &nbsp;&nbsp;- Check for incorrect speed, missing spaces, or unsupported characters.
-    
-    &nbsp;&nbsp;- Ensure audio input has a clear 550 Hz tone at 20 WPM.
-    
-    &nbsp;&nbsp;- For image input, use crisp and high-contrast visuals.
-    """, unsafe_allow_html=True)
+    st.subheader("🛠️ General Troubleshooting")
 
-with st.expander("Can I use audio from YouTube or MP3s?"):
-    st.markdown("""
-    &nbsp;&nbsp;- Convert to **WAV format** using Audacity or online tools.
-    
-    &nbsp;&nbsp;- Ensure the Morse tone is around **550 Hz** and clearly audible.
-    
-    &nbsp;&nbsp;- Avoid compression artifacts from MP3 that degrade clarity.
-    """, unsafe_allow_html=True)
+    with st.expander("Why is my Morse not decoding correctly?"):
+        st.markdown("""
+        &nbsp;&nbsp;- Check for incorrect speed, missing spaces, or unsupported characters.
+        &nbsp;&nbsp;- Ensure audio input has a clear 550 Hz tone at 20 WPM.
+        &nbsp;&nbsp;- For image input, use crisp and high-contrast visuals.
+        """, unsafe_allow_html=True)
 
-with st.expander("What’s the difference between WPM and Farnsworth speed?"):
-    st.markdown("""
-    &nbsp;&nbsp;- **WPM** controls character rate (dot/line length).
-    
-    &nbsp;&nbsp;- **Farnsworth speed** adds **extra spacing** between characters and words.
-    
-    &nbsp;&nbsp;- Helps beginners decode more easily by slowing gaps but keeping character timing.
-    """, unsafe_allow_html=True)
+    with st.expander("Can I use audio from YouTube or MP3s?"):
+        st.markdown("""
+        &nbsp;&nbsp;- Convert to **WAV format** using Audacity or online tools.
+        &nbsp;&nbsp;- Ensure the Morse tone is around **550 Hz** and clearly audible.
+        &nbsp;&nbsp;- Avoid compression artifacts from MP3 that degrade clarity.
+        """, unsafe_allow_html=True)
 
-with st.expander("Can I decode Morse live or from a microphone?"):
-    st.markdown("""
-    &nbsp;&nbsp;- No — this prototype supports **only uploaded files** for now.
-    
-    &nbsp;&nbsp;- Real-time microphone decoding would require **audio streaming** and latency control.
-    """, unsafe_allow_html=True)
+    with st.expander("What’s the difference between WPM and Farnsworth speed?"):
+        st.markdown("""
+        &nbsp;&nbsp;- **WPM** controls character rate (dot/line length).
+        &nbsp;&nbsp;- **Farnsworth speed** adds **extra spacing** between characters and words.
+        &nbsp;&nbsp;- Helps beginners decode more easily by slowing gaps but keeping character timing.
+        """, unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True)
+    with st.expander("Can I decode Morse live or from a microphone?"):
+        st.markdown("""
+        &nbsp;&nbsp;- No — this prototype supports **only uploaded files** for now.
+        &nbsp;&nbsp;- Real-time microphone decoding would require **audio streaming** and latency control.
+        """, unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # ----------- Tab: CONTACT -----------
 with tabs[2]:
