@@ -276,7 +276,7 @@ with tabs[1]:
         """, unsafe_allow_html=True)
 
     with col2:
-        st.image("3fa1ff78-ba44-4cf6-aeae-555aaa64cd10.png", caption="International Morse Code Chart", use_column_width=True)
+        st.image("img1.jpg, caption="International Morse Code Chart", use_column_width=True)
 
     st.markdown("---")
     st.subheader("❓ Frequently Asked Questions")
