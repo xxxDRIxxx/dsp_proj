@@ -137,8 +137,8 @@ with tabs[0]:
 
     elif mode == "Morse to Text":
         st.subheader("Morse Input to Text Decoder")
-        morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
         st.markdown(morse_table)
+        morse_input = st.text_input("Enter Morse code (space for letters, `/` for words):")
         if morse_input:
             text_output = morse_to_text(morse_input)
             st.code(text_output, language='text')
