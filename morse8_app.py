@@ -150,7 +150,7 @@ with tabs[0]:
         with col2:
             st.markdown("### Input Morse Code")
             morse_input = st.text_area("Use `/` for word gaps, space for letters.", height=120)
-                if morse_input:
+            if morse_input:
                 text_output = morse_to_text(morse_input)
                 st.success("✅ Decoded Text")
                 st.code(text_output, language='text')
