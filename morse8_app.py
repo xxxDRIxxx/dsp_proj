@@ -213,6 +213,15 @@ with tabs[0]:
                 
     elif mode == "AUDIO to TEXT":
         st.subheader("📡 Morse Audio to Text")
+
+        st.warning(
+            "⚠️ This decoder only works with WAV files that meet the following specs:\n"
+            "- Speed: 20 WPM\n"
+            "- Farnsworth speed: 15 WPM\n"
+            "- Tone pitch: ~550 Hz\n"
+            "- Volume: 40% to 100% for best clarity"
+        )
+
         audio_file = st.file_uploader("Upload a Morse code WAV audio file", type=["wav"])
 
         if audio_file is not None:
@@ -228,10 +237,11 @@ with tabs[0]:
             preroll = np.zeros(preroll_samples)
             data = np.concatenate([preroll, data])
 
-            st.info("🔍 Extracting and filtering tone at ~550Hz...")
+            st.info(
+                "🔍 Extracting and filtering tone at ~550Hz...\n"
+                "📏 Detecting Morse timing (Farnsworth speed = 15 WPM)..."
+            )
             filtered = bandpass_filter(data, fs)
-
-            st.info("📏 Detecting Morse timing (Farnsworth speed = 15 WPM)...")
             morse_code = extract_morse_units(filtered, fs, wpm=15)
 
             st.success("🔊 Morse Detected:")
