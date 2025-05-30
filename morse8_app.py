@@ -213,54 +213,29 @@ with tabs[0]:
     elif mode == "AUDIO to TEXT":
         st.subheader("📡 Morse Audio to Text")
         audio_file = st.file_uploader("Upload a Morse code WAV audio file", type=["wav"])
-    
+
         if audio_file is not None:
             st.audio(audio_file, format="audio/wav")
+            fs, data = wavfile.read(audio_file)
 
-            sample_rate, data = wavfile.read(audio_file)
+            if data.ndim > 1:
+                data = data.mean(axis=1)  # Convert stereo to mono
 
-            if data.ndim > 1:  # Stereo to mono
-                data = data.mean(axis=1)
+            st.info("🔍 Extracting and filtering tone at ~550Hz...")
+            filtered = bandpass_filter(data, fs)
 
-            duration = len(data) / sample_rate
-            t = np.linspace(0., duration, len(data))
+            st.info("📏 Detecting Morse timing...")
+            morse_code = extract_morse_units(filtered, fs, wpm=20)
 
-            volume_threshold = 200
-            tone_mask = np.abs(data) > volume_threshold
-            tone_times = t[tone_mask]
+            st.success("🔊 Morse Detected:")
+            st.code(morse_code)
 
-            if len(tone_times) == 0:
-                st.warning("⚠️ No Morse tones detected. Check the volume threshold or input.")
-            else:
-                intervals = np.diff(tone_times)
-                unit = np.median(intervals)  # Estimate dot duration
-
-                symbols = []
-                gap_time = 0.3 * unit  # Slight tolerance for gaps
-
-                last_time = tone_times[0]
-                current_symbol = '-'
-
-                for current_time in tone_times[1:]:
-                    gap = current_time - last_time
-                    if gap < gap_time:
-                        current_symbol += '-'
-                    else:
-                        symbols.append(current_symbol)
-                        current_symbol = '-'
-                    last_time = current_time
-                symbols.append(current_symbol)
-
-                morse_sequence = ' '.join(symbols)
-                st.write("🔊 Detected Morse:")
-                st.code(morse_sequence)
-
-                translated = morse_to_text(morse_sequence)
+            try:
+                text = morse_to_text(morse_code)
                 st.write("📄 Decoded Text:")
-                st.code(translated)
-        else:
-            st.info("⚠️ Please upload a `.wav` file to decode Morse audio.")
-
+                st.code(text)
+            except Exception as e:
+                st.error(f"❌ Error decoding Morse: {e}")
 
 # ----------- Tab: FACTS -----------
 with tabs[1]:
