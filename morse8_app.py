@@ -278,7 +278,6 @@ with tabs[1]:
     with col2:
         st.image("img1.jpg", caption="International Morse Code Chart", use_column_width=True)
 
-    st.markdown("---")
     st.subheader("❓ Frequently Asked Questions")
 
     with st.expander("What is Morse code used for today?"):
