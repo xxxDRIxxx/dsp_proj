@@ -78,26 +78,23 @@ def bandpass_filter(data, fs, lowcut=500, highcut=600, order=5):
     b, a = butter(order, [low, high], btype='band')
     return filtfilt(b, a, data)
 
-def extract_morse_units(signal, fs, threshold=0.1, wpm=20):
+def extract_morse_units(signal, fs, threshold=0.1, wpm=15):
     envelope = np.abs(hilbert(signal))
     on = envelope > (np.max(envelope) * threshold)
 
-    dot_duration = 60 / (50 * wpm)
+    dot_duration = 60 / (50 * wpm)  # dot duration in seconds
     unit_samples = int(dot_duration * fs)
 
     changes = np.diff(on.astype(int))
     starts = np.where(changes == 1)[0]
     ends = np.where(changes == -1)[0]
 
-    # Ensure each start has a matching end
-    if ends.size == 0 or starts.size == 0:
-        return ""
-
-    # Trim unmatched end or start
-    if ends[0] < starts[0]:
-        ends = ends[1:]
-    if starts.size > ends.size:
-        starts = starts[:len(ends)]
+    # Fix edge misalignment
+    if ends.size > 0 and starts.size > 0:
+        if ends[0] < starts[0]:
+            ends = ends[1:]
+        if starts.size > ends.size:
+            starts = starts[:len(ends)]
 
     morse = []
     for i in range(len(starts)):
@@ -110,8 +107,8 @@ def extract_morse_units(signal, fs, threshold=0.1, wpm=20):
         if i < len(starts) - 1:
             gap = (starts[i + 1] - ends[i]) / fs
             if gap > dot_duration * 6:
-                morse.append(' / ')
+                morse.append(' / ')  # Word gap
             elif gap > dot_duration * 2:
-                morse.append(' ')
+                morse.append(' ')    # Letter gap
 
     return ''.join(morse)
