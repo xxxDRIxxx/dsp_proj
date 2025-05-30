@@ -106,6 +106,10 @@ def set_background(image_path):
     .info-box h1, .info-box h2, .info-box h3, .info-box p, .info-box li {{
         color: #000000 !important;
     }}
+    @keyframes fadeIn {{
+        from {{ opacity: 0; transform: translateY(20px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
@@ -117,7 +121,7 @@ if os.path.exists(bg_path):
 reader = easyocr.Reader(['en'])  
 
 # ----------- Tabs Setup -----------
-tabs = st.tabs(["DECODER", "FACTS", "CONTACT"])
+tabs = st.tabs(["⚙️ DECODER", "💡 FACTS", "📞 CONTACT US"])
 
 # ----------- Tab: DECODER -----------
 with tabs[0]:
@@ -130,10 +134,10 @@ with tabs[0]:
     </div>
     """, unsafe_allow_html=True)
 
-    mode = st.radio("Select translation mode:", ["Text to Morse", "Morse to Text", "Image to Morse/Text", "Morse Audio to Text"])
+    mode = st.radio("Select translation mode:", ["TEXT to MORSE", "MORSE to TEXT", "IMAGE to MORSE/TEXT", "AUDIO to TEXT"])
 
-    if mode == "Text to Morse":
-        st.subheader("Text to Morse Translation")
+    if mode == "TEXT to MORSE":
+        st.subheader("🔤 Text to Morse Translation")
         text_input = st.text_input("Enter English text:")
         if text_input:
             # Replace space with slash to explicitly mark word boundaries
@@ -141,7 +145,7 @@ with tabs[0]:
             morse_output = text_to_morse(formatted_input)
             st.code(morse_output, language='text')
 
-    elif mode == "Morse to Text":
+    elif mode == "MORSE to TEXT",:
         st.subheader("🌐 Morse Input to Text Decoder")
 
         col1, col2 = st.columns([1.2, 1.8])
@@ -161,11 +165,11 @@ with tabs[0]:
                 st.success("✅ Decoded Text")
                 st.code(text_output, language='text')
                     
-    elif mode == "Image to Morse/Text":
+    elif mode == "IMAGE to MORSE/TEXT:
         st.subheader("📷 Image to Morse/Text")
 
         uploaded_image = st.file_uploader(
-            "Upload an image containing Morse or English text",
+            "⚠️ Upload an image containing Morse or English text",
             type=["png", "jpg", "jpeg"]
         )
 
@@ -206,8 +210,8 @@ with tabs[0]:
             except Exception as e:
                 st.error(f"❌ OCR or image processing failed: {e}")
                 
-    elif mode == "Morse Audio to Text":
-        st.subheader("Morse Audio to Text")
+    elif mode == "AUDIO to TEXT":
+        st.subheader("📡 Morse Audio to Text")
         audio_file = st.file_uploader("Upload a Morse code WAV audio file", type=["wav"])
     
         if audio_file is not None:
@@ -226,7 +230,7 @@ with tabs[0]:
             tone_times = t[tone_mask]
 
             if len(tone_times) == 0:
-                st.warning("No Morse tones detected. Check the volume threshold or input.")
+                st.warning("⚠️ No Morse tones detected. Check the volume threshold or input.")
             else:
                 intervals = np.diff(tone_times)
                 unit = np.median(intervals)  # Estimate dot duration
@@ -255,7 +259,7 @@ with tabs[0]:
                 st.write("📄 Decoded Text:")
                 st.code(translated)
         else:
-            st.info("Please upload a `.wav` file to decode Morse audio.")
+            st.info("⚠️ Please upload a `.wav` file to decode Morse audio.")
 
 
 # ----------- Tab: FACTS -----------
