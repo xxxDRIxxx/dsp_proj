@@ -165,7 +165,7 @@ with tabs[0]:
                 st.success("✅ Decoded Text")
                 st.code(text_output, language='text')
                     
-    elif mode == "IMAGE to MORSE/TEXT:
+    elif mode == "IMAGE to MORSE/TEXT":
         st.subheader("📷 Image to Morse/Text")
 
         uploaded_image = st.file_uploader(
