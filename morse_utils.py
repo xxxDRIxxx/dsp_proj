@@ -106,9 +106,10 @@ def extract_morse_units(signal, fs, threshold=0.1, wpm=15):
 
         if i < len(starts) - 1:
             gap = (starts[i + 1] - ends[i]) / fs
+            print(f"Gap {i}: {gap:.3f} sec")  # Debug line
             if gap > dot_duration * 6:
-                morse.append(' / ')  # Word gap
+                morse.append(' / ')
             elif gap > dot_duration * 2:
-                morse.append(' ')    # Letter gap
-
+                morse.append(' ')
+                
     return ''.join(morse)
